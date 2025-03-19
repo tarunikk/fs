@@ -1,17 +1,27 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import personService from './services/persons'
 
-const Person = ({ name, number }) => {
+const Person = ({ name, number, removePerson}) => {
+  const label = 'Delete'
+
   return (
-    <li>{name} {number}</li>
+    <li>
+        {name} {number}
+        <button onClick={removePerson}> {label}</button>
+    </li>
   )
 }
 
-const Persons = ({ personsToShow }) => {
+const Persons = ({ personsToShow, removePerson}) => {
   return (
     <ul>
       {personsToShow.map(person => 
-        <Person key={person.name} name={person.name} number={person.number}/>
+        <Person 
+          key={person.id} 
+          name={person.name} 
+          number={person.number}
+          removePerson = {() => removePerson(person.id)}/>
       )}
     </ul> 
   )
@@ -53,9 +63,11 @@ const App = () => {
   const [newFilter, setNewFilter] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3002/persons')
+    console.log('effect')
+    personService
+      .getAll()
       .then(response => {
+        console.log('promise fulfilled')
         setPersons(response.data)
       })
   }, [])
@@ -68,7 +80,7 @@ const App = () => {
     event.preventDefault ()
     const names = persons.map(person => person.name)
 
-    const newPerson = {
+    const personObject = {
       name: newName,
       number: newNumber,
       id: newName
@@ -79,10 +91,28 @@ const App = () => {
       return
     }
 
-    setPersons(persons.concat(newPerson))
-    setNewName('')
-    setNewNumber('')
-    console.log(persons)
+    personService    
+      .create(personObject)    
+      .then(response => {  
+        setPersons(persons.concat(response.data))
+        setNewName('')
+        setNewNumber('')
+        console.log(persons)    
+      })
+  }
+
+  const removePerson = ( id ) => {
+    console.log(`information of ${id} needs to be deleted`)
+    if (confirm("Do you want to remove all information of this person?")) {
+      axios.delete(`http://localhost:3002/persons/${id}`)      
+        .then(response => {  
+          console.log(response) })
+        .catch(error => {
+          console.error(error)
+        })
+    } else {
+      return
+    }   
   }
 
   const handleAddName = (event) => {
@@ -108,7 +138,7 @@ const App = () => {
       <h2>Add a new</h2>
         <PersonForm addPerson={addPerson} newName={newName} handleAddName={handleAddName} newNumber={newNumber} handleAddNumber={handleAddNumber} />
       <h2>Numbers</h2>
-        <Persons personsToShow={personsToShow} />
+        <Persons personsToShow={personsToShow} removePerson={removePerson} />
     </div>
   )
 }

@@ -61,6 +61,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
     console.log('effect')
@@ -97,6 +98,10 @@ const App = () => {
         setPersons(persons.concat(response.data))
         setNewName('')
         setNewNumber('')
+        setErrorMessage( `added '${personObject.name}' `)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 10000)
         console.log(persons)    
       })
   }
@@ -106,6 +111,11 @@ const App = () => {
     if (confirm("Do you want to remove all information of this person?")) {
       axios.delete(`http://localhost:3002/persons/${id}`)      
         .then(response => {  
+          setPersons(persons.filter(p => p.id !== id))
+          setErrorMessage( `removed '${id}' `)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 10000)
           console.log(response) })
         .catch(error => {
           console.error(error)
@@ -113,6 +123,18 @@ const App = () => {
     } else {
       return
     }   
+  }
+
+  const Notification = ({ message }) => {
+    if (message === null) {
+      return null
+    }
+  
+    return (
+      <div className="error">
+        {message}
+      </div>
+    )
   }
 
   const handleAddName = (event) => {
@@ -129,9 +151,11 @@ const App = () => {
     setNewFilter(event.target.value)
   }
 
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <div>
         <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
       </div>

@@ -6,7 +6,7 @@ const App = () => {
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
-  const [errorMessage, setErrorMessage] = useState('an error happened')
+  const [errorMessage, setErrorMessage] = useState('null')
 
   useEffect (() => {
     noteService
@@ -17,23 +17,23 @@ const App = () => {
   }, [])
   console.log('render', notes.length, 'notes')
 
-  const handleNoteChange = (event) => {
-    setNewNote(event.target.value)
-  }
-
-  const toggleImportanceOf = (id) => {
+  const toggleImportanceOf = id => {
     console.log(`importance of ${id} needs to be toggled`)
-    const note = notes.find((n) => n.id === id)
+    const note = notes.find(n => n.id === id)
     const changedNote = { ...note, important: !note.important }
 
     noteService
       .update(id, changedNote)
-      .then((returnedNote) => {
-        setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)))
+      .then(returnedNote => {
+        setNotes(notes.map(note => (note.id !== id 
+          ? note 
+          : returnedNote)))
         console.log(`importance of ${id} was changed`)
       })    
       .catch(error => {
-        setErrorMessage( `the note '${note.content}' was already deleted from server`)
+        setErrorMessage( 
+          `the note '${note.content}' was already deleted from server`
+        )
         setTimeout(() => {
           setErrorMessage(null)
         }, 5000)
@@ -45,7 +45,7 @@ const App = () => {
     event.preventDefault()
     const noteObject = {
       content: newNote,
-      important: Math.random() > 0.5,
+      important: Math.random() > 0.5
     }
 
     noteService
@@ -53,13 +53,16 @@ const App = () => {
       .then(returnedNote => {
         setNotes(notes.concat(returnedNote))
         setNewNote('')
-        console.log("response")
       })
+  }
+  
+  const handleNoteChange = event => {
+    setNewNote(event.target.value)
   }
 
   const notesToShow = showAll
     ? notes
-    : notes.filter((note) => note.important)
+    : notes.filter(note => note.important)
 
   const Notification = ({ message }) => {
     if (message === null) {
@@ -98,7 +101,7 @@ const App = () => {
         </button>
       </div>      
       <ul>
-        {notesToShow.map((note) => ( 
+        {notesToShow.map(note => ( 
           <Note 
             key={note.id} 
             note={note} 
@@ -107,7 +110,7 @@ const App = () => {
         ))}
       </ul>
       <form onSubmit={addNote}>
-      <input
+        <input
           value={newNote}
           onChange={handleNoteChange}
         />

@@ -34,6 +34,8 @@ app.use(requestLogger)
 // middleware, joka tulostaa konsoliin palvelimelle tulevien pyyntöjen perustietoja
 app.use(cors())
 // cors middleware sallii kaikista origineista tulevat pyynnöt kaikkiin backendin express routeihin
+app.use(express.static('dist'))
+// static middleware saa expressin näyttämään staattista sisältöä eli sivun index.html ja sen lataaman JavaScriptin
 
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')

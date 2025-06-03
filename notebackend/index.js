@@ -42,9 +42,10 @@ app.get('/api/notes', (request, response) => {
   response.json(notes)
 })  // näytetään kaikki notes
 
+
 app.get('/api/notes/:id', (request, response) => {
   const id = request.params.id
-  const note = notes.find(note => note.id === id)
+  const note = notes.find((note) => note.id === id)
 
   if (note) {
     response.json(note)

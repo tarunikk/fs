@@ -1,0 +1,3 @@
+DELETE  HTTP://localhost:3001/api/persons/506
+
+// laita id tilalle olemassa oleva ja testaa sen jälkeen GET samalla id

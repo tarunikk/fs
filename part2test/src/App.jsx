@@ -53,7 +53,7 @@ const App = () => {
       .then(returnedNote => {
         setNotes(notes.concat(returnedNote))
         setNewNote('')
-        console.log(response)
+        console.log("response")
       })
   }
 

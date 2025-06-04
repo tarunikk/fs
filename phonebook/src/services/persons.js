@@ -8,5 +8,5 @@ const getAll = () => {
 const create = newObject => {
     return axios.post(baseUrl, newObject)
   }
-  
-export default { getAll, create}
+
+export default { getAll, create }

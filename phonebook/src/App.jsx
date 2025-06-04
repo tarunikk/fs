@@ -109,7 +109,7 @@ const App = () => {
   const removePerson = ( name, id ) => {
     console.log(`information of ${name} needs to be deleted`)
     if (confirm(`Do you want to remove all information of ${name}?`)) {
-      axios.delete(`http://localhost:3001/api/persons/${id}`)      
+      axios.delete(`/api/persons/${id}`)      
         .then(response => {  
           setPersons(persons.filter(p => p.id !== id))
           setErrorMessage( `removed '${name}' `)

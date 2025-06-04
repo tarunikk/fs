@@ -62,6 +62,14 @@ app.get('/info', (request, response) => {
     response.send(`Phonebook has info for ${howMany} people. ${date}`)
 })
 
+
+app.delete('/api/persons/:id', (request, response) => {
+    const id = request.params.id
+    persons = persons.filter(person => person.id !== id)
+
+    response.status(204).end()
+})
+
 app.post('/api/persons', (request, response) => {
     const body = request.body
 
@@ -107,13 +115,6 @@ const generateId = () => {
     const newId = Math.floor(Math.random() * 1000)
     return String(newId)
 }
-
-app.delete('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    persons = persons.filter(person => person.id !== id)
-
-    response.status(204).end()
-})
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {

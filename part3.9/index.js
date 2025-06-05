@@ -1,4 +1,6 @@
+require('dotenv').config()
 const express = require('express')
+const Person = require('./models/person')
 const app = express()
 var morgan = require('morgan')
 
@@ -40,18 +42,15 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :t
 app.use(express.static('dist'))
 
 app.get('/api/persons', (request, response) => {
+  Person.find({}).then(persons => {
     response.json(persons)
+  })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    const person = persons.find(person => person.id === id)
-
-    if (person) {
-        response.json(person)
-    } else {
-        response.status(404).end()
-    }
+  Person.findById(request.params.id).then(person => {
+    response.json(person)
+  })
 })
 
 app.get('/info', (request, response) => {
@@ -98,17 +97,18 @@ app.post('/api/persons', (request, response) => {
         })        
     }
 
-    const person = {
+    const newName = JSON.stringify(body.name)
+    const newNumber = JSON.stringify(body.number)
+
+    const person = new Person ({
         name: body.name,
         number: body.number,
-        id: generateId(),
-    }
+    })
 
-    console.log(person)
-
-    persons = persons.concat(person)
-
-    response.json(person)
+    person.save().then(savedPerson => {
+        response.json(savedPerson)
+    })
+    console.log(`added ${newName} number ${newNumber} to phonebook`)
 })
 
 const generateId = () => {
@@ -116,7 +116,7 @@ const generateId = () => {
     return String(newId)
 }
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })

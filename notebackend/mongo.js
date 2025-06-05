@@ -8,7 +8,7 @@ if (process.argv.length < 3) {
   process.exit(1)
 }
 
-//  Ohjelma odottaa parametrinä MongoDB:n salasanaa (joka on cDyRZFMslkNBUEVK)
+//  Ohjelma odottaa parametrinä MongoDB:n salasanaa
 const password = process.argv[2]
 
 //  MongoDB cluster0 url

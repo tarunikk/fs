@@ -10,12 +10,10 @@ const App = () => {
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
 
-  useEffect (() => {
-    noteService
-      .getAll()
-      .then((initialNotes) => {
-        setNotes(initialNotes)
-      })
+  useEffect(() => {
+    noteService.getAll().then(initialNotes => {
+      setNotes(initialNotes)
+    })
   }, [])
 
   const addNote = event => {
@@ -25,12 +23,10 @@ const App = () => {
       important: Math.random() > 0.5
     }
 
-    noteService
-      .create(noteObject)
-      .then(returnedNote => {
-        setNotes(notes.concat(returnedNote))
-        setNewNote('')
-      })
+    noteService.create(noteObject).then(returnedNote => {
+      setNotes(notes.concat(returnedNote))
+      setNewNote('')
+    })
   }
 
   const toggleImportanceOf = id => {
@@ -52,14 +48,12 @@ const App = () => {
         setNotes(notes.filter(n => n.id !== id))
       })
   }
-  
+
   const handleNoteChange = event => {
     setNewNote(event.target.value)
   }
 
-  const notesToShow = showAll
-    ? notes
-    : notes.filter(note => note.important)
+  const notesToShow = showAll ? notes : notes.filter(note => note.important)
 
   return (
     <div>
@@ -67,25 +61,22 @@ const App = () => {
       <Notification message={errorMessage} />
       <div>
         <button onClick={() => setShowAll(!showAll)}>
-          show {showAll ? 'important' : 'all' }
+          show {showAll ? 'important' : 'all'}
         </button>
-      </div>      
+      </div>
       <ul>
-        {notesToShow.map(note => ( 
-          <Note 
-            key={note.id} 
-            note={note} 
-            toggleImportance={() => toggleImportanceOf(note.id)}  
+        {notesToShow.map(note => (
+          <Note
+            key={note.id}
+            note={note}
+            toggleImportance={() => toggleImportanceOf(note.id)}
           />
         ))}
       </ul>
       <form onSubmit={addNote}>
-        <input
-          value={newNote}
-          onChange={handleNoteChange}
-        />
+        <input value={newNote} onChange={handleNoteChange} />
         <button type="submit">save</button>
-      </form> 
+      </form>
       <Footer />
     </div>
   )

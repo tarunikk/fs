@@ -92,9 +92,11 @@ app.post('/api/persons', (request, response) => {
         number: body.number,
     })
 
-    person.save().then(savedPerson => {
+    person.save()
+      .then(savedPerson => {
         response.json(savedPerson)
-    })
+      })
+      .catch(error => next(error))
     console.log(`added ${newName} number ${newNumber} to phonebook`)
 })
 

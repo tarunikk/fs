@@ -63,10 +63,11 @@ app.get('/info', (request, response) => {
 
 
 app.delete('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    persons = persons.filter(person => person.id !== id)
-
-    response.status(204).end()
+  Person.findByIdAndDelete(request.params.id)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
 app.post('/api/persons', (request, response) => {
@@ -111,10 +112,21 @@ app.post('/api/persons', (request, response) => {
     console.log(`added ${newName} number ${newNumber} to phonebook`)
 })
 
-const generateId = () => {
-    const newId = Math.floor(Math.random() * 1000)
-    return String(newId)
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
 }
+app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  }
+
+  next(error)
+}
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {

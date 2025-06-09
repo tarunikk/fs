@@ -6,11 +6,12 @@ var morgan = require('morgan')
 
 app.use(express.json())
 
-morgan.token('type', function (req, res) { 
-    const body = req.body
-    if (body == null) {
-        return "-"
-    } else {
+// eslint-disable-next-line no-unused-vars
+morgan.token('type', function (req, res) {
+  const body = req.body
+  if (body === null) {
+    return '-'
+  } else {
     return JSON.stringify([body.name, body.number])}
 })
 
@@ -49,6 +50,7 @@ app.get('/info', (request, response) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
+    // eslint-disable-next-line no-unused-vars
     .then(result => {
       response.status(204).end()
     })
@@ -56,48 +58,48 @@ app.delete('/api/persons/:id', (request, response, next) => {
 })
 
 app.post('/api/persons', (request, response, next) => {
-    const body = request.body
+  const body = request.body
 
-    if (!body.name) {
-        return response.status(400).json({
-            error: 'name missing'
-        })   // varmistetaan että henkilöllä on nimi
-    }
-    if (!body.number) {
-        return response.status(400).json({
-            error: 'number missing'
-        })   // varmistetaan että henkilöllä on numero
-    }
+  if (!body.name) {
+    return response.status(400).json({
+      error: 'name missing'
+    })   // varmistetaan että henkilöllä on nimi
+  }
+  if (!body.number) {
+    return response.status(400).json({
+      error: 'number missing'
+    })   // varmistetaan että henkilöllä on numero
+  }
 
-    /*
+  /*
     const names = persons.map(person => person.name)
     const numbers = persons.map(person => person.number)
 
     if (names.includes(body.name)) {
         return response.status(400).json({
             error: 'name must be unique'
-        })        
+        })
     }
     if (numbers.includes(body.number)) {
         return response.status(400).json({
             error: 'number must be unique'
-        })        
+        })
     } */
 
-    const newName = JSON.stringify(body.name)
-    const newNumber = JSON.stringify(body.number)
+  const newName = JSON.stringify(body.name)
+  const newNumber = JSON.stringify(body.number)
 
-    const person = new Person ({
-        name: body.name,
-        number: body.number,
+  const person = new Person ({
+    name: body.name,
+    number: body.number,
+  })
+
+  person.save()
+    .then(savedPerson => {
+      response.json(savedPerson)
     })
-
-    person.save()
-      .then(savedPerson => {
-        response.json(savedPerson)
-      })
-      .catch(error => next(error))
-    console.log(`added ${newName} number ${newNumber} to phonebook`)
+    .catch(error => next(error))
+  console.log(`added ${newName} number ${newNumber} to phonebook`)
 })
 
 const unknownEndpoint = (request, response) => {
@@ -110,13 +112,14 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
   }
-
   next(error)
 }
 app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
+  console.log(`Server running on port ${PORT}`)
 })

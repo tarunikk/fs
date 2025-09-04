@@ -15,16 +15,16 @@ mongoose.set('strictQuery', false)
 mongoose.connect(url)
 
 const personSchema = new mongoose.Schema({
-    name: String,
-    number: String,
+  name: String,
+  number: String,
 })
 
 const Person = mongoose.model('Person', personSchema)
 
-const person = new Person({ 
-    name : newName, 
-    number : newNumber 
-}) 
+const person = new Person({
+  name : newName,
+  number : newNumber
+})
 
 if (process.argv.length < 4) {
   Person.find({}).then(result => {
@@ -33,9 +33,10 @@ if (process.argv.length < 4) {
       console.log(`${person.name} ${person.number}`)
     })
     mongoose.connection.close()
-  }) 
+  })
 } else {
-    person.save().then(result => {
+  // eslint-disable-next-line no-unused-vars
+  person.save().then(result => {
     console.log(`added ${newName} number ${newNumber} to phonebook`)
     mongoose.connection.close()
   })

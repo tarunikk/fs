@@ -1,27 +1,46 @@
 require('dotenv').config()
 const express = require('express')
 const Person = require('./models/person')
+var morgan = require('morgan')
 
 const app = express()
 
-var morgan = require('morgan')
-
-app.use(express.json())
-
-/*
 morgan.token('type', function (req, res) {
   const body = req.body
+  console.log(res.body)
   if (body === null) {
     return '-'
   } else {
     return JSON.stringify([body.name, body.number])}
 })
 
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
 
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :type'))
-*/
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
+  }
+  next(error)
+}
 
 app.use(express.static('dist'))
+app.use(express.json())
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :type'))
+
+app.get('/', (request, response) => {
+  response.send('<h1>Phonebook</h1>')
+})
+
+app.get('/info', (request, response) => {
+  const date = new Date().toString()
+  console.log(date)
+  Person.find({}).then(persons => {
+    const howMany = persons.length
+    response.send(`<p>Phonebook has info for ${howMany} people.</p> <p>${date}</p>`)
+  })
+})
 
 app.get('/api/persons', (request, response) => {
   Person.find({}).then(persons => {
@@ -38,28 +57,9 @@ app.get('/api/persons/:id', (request, response, next) => {
         response.status(404).end()
       }
     })
-
     .catch(error => next(error))
 })
 
-/*
-app.get('/info', (request, response) => {
-    const date = new Date().toString()
-    console.log(date)
-    const howMany = persons.length
-
-    response.send(`Phonebook has info for ${howMany} people. ${date}`)
-}) */
-
-
-app.delete('/api/persons/:id', (request, response, next) => {
-  Person.findByIdAndDelete(request.params.id)
-    // eslint-disable-next-line no-unused-vars
-    .then(result => {
-      response.status(204).end()
-    })
-    .catch(error => next(error))
-})
 
 app.post('/api/persons', (request, response, next) => {
   const body = request.body
@@ -75,24 +75,6 @@ app.post('/api/persons', (request, response, next) => {
     })   // varmistetaan että henkilöllä on numero
   }
 
-  /*
-    const names = persons.map(person => person.name)
-    const numbers = persons.map(person => person.number)
-
-    if (names.includes(body.name)) {
-        return response.status(400).json({
-            error: 'name must be unique'
-        })
-    }
-    if (numbers.includes(body.number)) {
-        return response.status(400).json({
-            error: 'number must be unique'
-        })
-    } */
-
-  const newName = JSON.stringify(body.name)
-  const newNumber = JSON.stringify(body.number)
-
   const person = new Person ({
     name: body.name,
     number: body.number,
@@ -101,26 +83,26 @@ app.post('/api/persons', (request, response, next) => {
   person.save()
     .then(savedPerson => {
       response.json(savedPerson)
+      console.log(`added ${body.name} number ${body.number} to phonebook`)
     })
     .catch(error => next(error))
-  console.log(`added ${newName} number ${newNumber} to phonebook`)
 })
 
+app.delete('/api/persons/:id', (request, response, next) => {
+  Person.findByIdAndDelete(request.params.id)
+    .then(result => {
+      response.status(204).end()
+      console.log(result.name)
+    })
+    .catch(error => next(error))
+})
+
+// olemattomien osoitteiden käsittely
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
+
 app.use(unknownEndpoint)
-
-const errorHandler = (error, request, response, next) => {
-  console.error(error.message)
-
-  if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id' })
-  } else if (error.name === 'ValidationError') {
-    return response.status(400).json({ error: error.message })
-  }
-  next(error)
-}
 app.use(errorHandler)
 
 const PORT = process.env.PORT

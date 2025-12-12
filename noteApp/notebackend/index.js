@@ -1,3 +1,13 @@
+// Nyt index.js vain importtaa tiedostossa app.js olevan varsinaisen sovelluksen ja käynnistää sen
+// Käynnistymisestä kertova konsolitulostus tehdään logger-moduulin funktion info avulla
+
+const app = require('./app') // varsinainen Express-sovellus
+const config = require('./utils/config')
+const logger = require('./utils/logger')
+
+/*
+Osan 3 koodi:
+
 require('dotenv').config()
 const express = require('express')
 const Note = require('./models/note')
@@ -101,6 +111,8 @@ const errorHandler = (error, request, response, next) => {
 app.use(errorHandler)
 
 const PORT = process.env.PORT
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+*/
+
+app.listen(config.PORT, () => {
+  logger.info(`Server running on port ${config.PORT}`)
 })

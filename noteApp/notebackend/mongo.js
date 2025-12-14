@@ -1,4 +1,4 @@
-/*  Kun koodi suoritetaan komennolla node mongo.js salasana 
+/*  Kun koodi suoritetaan komennolla node mongo.js salasana
     se lisää uuden dokumentin Mongoose tietokantaan */
 
 const mongoose = require('mongoose')
@@ -17,7 +17,7 @@ const url = `mongodb+srv://tarunikkanen:${password}@cluster0.2zjh6sj.mongodb.net
 mongoose.set('strictQuery', false)
 mongoose.connect(url)
 
-/*  Yhteyden avaamisen jälkeen määritellään muistiinpanon skeema 
+/*  Yhteyden avaamisen jälkeen määritellään muistiinpanon skeema
     Skeema kertoo Mongooselle, miten muistiinpano-olio tulee tallettaa tietokantaan */
 const noteSchema = new mongoose.Schema({
   content: String,
@@ -25,22 +25,22 @@ const noteSchema = new mongoose.Schema({
 })
 
 /*  Skeemaa vastaava model
-    Ensimmäisenä parametrinä oleva merkkijono Note määrittelee, 
+    Ensimmäisenä parametrinä oleva merkkijono Note määrittelee,
     että Mongoose tallettaa muistiinpanoa vastaavat oliot kokoelmaan notes (Mongoosen konventio) */
 const Note = mongoose.model('Note', noteSchema)
 
 /*  !!! KOMMENTOIDAAN PIILOON UUSIA MUISTIINPANOJA GENEROIVA OSA!!!
     Luodaan muistiinpanoa vastaavan model:in avulla muistiinpano-olio
-    modelit ovat ns. konstruktorifunktioita, jotka luovat 
-    parametrien perusteella Javascript-olioita 
+    modelit ovat ns. konstruktorifunktioita, jotka luovat
+    parametrien perusteella Javascript-olioita
 const note = new Note({
   content: 'Mongoose makes things easy',
   important: true,
-}) 
+})
 
     Tallettaminen tapahtuu metodilla save.
-    Metodi palauttaa promisen, jolle voidaan rekisteröidä 
-    then-metodin avulla tapahtumankäsittelijä 
+    Metodi palauttaa promisen, jolle voidaan rekisteröidä
+    then-metodin avulla tapahtumankäsittelijä
 note.save().then(result => {
   console.log('note saved!')
   mongoose.connection.close()

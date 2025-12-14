@@ -80,6 +80,7 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault ()
     const names = persons.map(person => person.name)
+    const numbers = persons.map(person => person.number)
 
     const personObject = {
       name: newName,
@@ -89,6 +90,13 @@ const App = () => {
 
     if (names.includes(newName)) {
       alert(`${newName} is already added to phonebook`)
+      console.log(`adding new person failed`)
+      return
+    }
+
+    if (numbers.includes(newNumber)) {
+      alert(`${newNumber} already exists phonebook`)
+      console.log(`adding new person failed`)
       return
     }
 
@@ -99,10 +107,18 @@ const App = () => {
         setNewName('')
         setNewNumber('')
         setErrorMessage( `added '${personObject.name}' `)
+        console.log(`${personObject.name} added`)
         setTimeout(() => {
           setErrorMessage(null)
         }, 10000)
         console.log(persons)    
+      })
+      .catch(error => {
+        console.log(error.response.data)
+        setErrorMessage(`${error.response.data.error}`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 10000)
       })
   }
 
@@ -112,13 +128,18 @@ const App = () => {
       axios.delete(`/api/persons/${id}`)      
         .then(response => {  
           setPersons(persons.filter(p => p.id !== id))
+          console.log(`${name} deleted`)
           setErrorMessage( `removed '${name}' `)
           setTimeout(() => {
             setErrorMessage(null)
           }, 10000)
           console.log(response) })
         .catch(error => {
-          console.error(error)
+          console.log(error.response.data)
+          setErrorMessage(`${error.response.data.error}`)
+          setTimeout(() => {
+          setErrorMessage(null)
+        }, 10000)
         })
     } else {
       return

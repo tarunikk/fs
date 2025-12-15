@@ -1,0 +1,46 @@
+const express = require('express')
+const mongoose = require('mongoose')
+const config = require('./utils/config')
+const blogsRouter = require('./controllers/blogs')
+
+const app = express()
+
+mongoose.connect(config.MONGODB_URI, { family: 4 })
+
+app.use(express.json())
+app.use('/api/blogs', blogsRouter)
+
+module.exports = app
+
+
+/* -> models/note.js
+const blogSchema = mongoose.Schema({
+  title: String,
+  author: String,
+  url: String,
+  likes: Number,
+})
+const Blog = mongoose.model('Blog', blogSchema)
+*/
+
+/* -> controllers/blogs.js
+app.get('/api/blogs', (request, response) => {
+  Blog.find({}).then((blogs) => {
+    response.json(blogs)
+  })
+})
+app.post('/api/blogs', (request, response) => {
+  const blog = new Blog(request.body)
+
+  blog.save().then((result) => {
+    response.status(201).json(result)
+  })
+})
+*/
+
+/* -> index.js
+const PORT = 3003
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
+*/

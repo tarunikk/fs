@@ -6,7 +6,7 @@ const average = array => {
     return sum + item
   }
   return array.length === 0
-    ? 0 
+    ? 0
     : array.reduce(reducer, 0) / array.length
 }
 
@@ -23,4 +23,4 @@ describe('average', () => {
   test('of empty array is zero', () => {
     assert.strictEqual(average([]), 0)
   })
-}) 
+})

@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "Blogin lisäys listaan",
+    "author": "Erkki Esimerkki",
+    "url": "http://example.com",
+    "likes": 3
+}

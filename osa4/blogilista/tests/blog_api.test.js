@@ -77,7 +77,7 @@ test('blog without likes has zero likes', async () => {
 
 test('title and url required', async () => {
   const newBlog = {
-    aurhor: 'no title or url',
+    author: 'no title or url',
   }
 
   await api
@@ -87,6 +87,31 @@ test('title and url required', async () => {
   
   const blogsAtEnd = await helper.blogsInDb()
   assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+})
+
+test('deleting a blog', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    const titles = blogsAtEnd.map(b => b.title)
+    assert(!titles.includes(blogToDelete.title))
+
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+})
+
+test('editing a blogs likes', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToEdit = blogsAtStart[0]
+
+    await api
+      .put(`/api/blogs/${blogToEdit.id}`)
+      .expect(204)
 })
 
 after(async () => {

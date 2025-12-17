@@ -46,7 +46,7 @@ test('a new blog can be added ', async () => {
   await api
     .post('/api/blogs')
     .send(newBlog)
-    .expect(200)
+    .expect(201)
     .expect('Content-Type', /application\/json/)
 
   const blogsAtEnd = await helper.blogsInDb()
@@ -54,6 +54,39 @@ test('a new blog can be added ', async () => {
 
   const titles = blogsAtEnd.map(n => n.title)
   assert(titles.includes('Uusi blogi'))
+})
+
+test('blog without likes has zero likes', async () => {
+  const newBlog = {
+    title: 'Nolla tykkäystä',
+    author: 'Erkki Esimerkki',
+    url: 'http://nolikes.com',
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+   const blogsAtEnd = await helper.blogsInDb()
+   const resultBlog = blogsAtEnd.find(b => b.title === 'Nolla tykkäystä')
+
+  assert.strictEqual(resultBlog.likes, 0)
+})
+
+test('title and url required', async () => {
+  const newBlog = {
+    aurhor: 'no title or url',
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+  
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
 })
 
 after(async () => {

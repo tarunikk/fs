@@ -108,10 +108,18 @@ test('deleting a blog', async () => {
 test('editing a blogs likes', async () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogToEdit = blogsAtStart[0]
+    const updatedBlogData = { ...blogToEdit, likes: blogToEdit.likes + 1 }
 
     await api
       .put(`/api/blogs/${blogToEdit.id}`)
-      .expect(204)
+      .send(updatedBlogData)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    const updatedBlog = blogsAtEnd.find(b => b.id === blogToEdit.id)
+
+    assert.strictEqual(updatedBlog.likes, blogToEdit.likes + 1 )
 })
 
 after(async () => {

@@ -1,5 +1,6 @@
 // muistiinpanoihin liittyvien reittien määrittelyt
 const notesRouter = require('express').Router()
+const jwt = require('jsonwebtoken')
 const Note = require('../models/note')
 const User = require('../models/user')
 
@@ -18,11 +19,28 @@ notesRouter.get('/:id', async (request, response) => {
   }
 })
 
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
+
 notesRouter.post('/', async (request, response) => {
   const body = request.body
 
+  // Apufunktio getTokenFrom eristää tokenin headerista authorization
+  // Tokenin oikeellisuus varmistetaan metodilla jwt.verify
+  // Metodi myös dekoodaa tokenin, eli palauttaa olion, jonka perusteella token on laadittu
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+
   // tieto muistiinpanon luovan käyttäjän id:stä lähetetään pyynnön rungossa kentän userId arvona
   const user = await User.findById(body.userId)
+
   if (!user) {
     return response.status(400).json({ error: 'userId missing or not valid' })
   }

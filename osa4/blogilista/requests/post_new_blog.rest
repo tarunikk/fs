@@ -1,11 +1,11 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY5NDU0MzYyZDNlNDBiMjhmZWE1Y2ZjYiIsImlhdCI6MTc2NjE2OTY1OX0.MRK1qw3bBjGniIFG-X6ct4KFZQKWdNn2jyzqAbTZ6Qo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY5NDU0MzYyZDNlNDBiMjhmZWE1Y2ZjYiIsImlhdCI6MTc2ODIyMzY2MX0.uSfJqLrSL0Kr-UPN2cWaymOMx2NxPVvEErwKaON_ZLI
 
 {
-    "title": "Token based auth",
-    "author": "Based",
+    "title": "käyttäjäksi sisäänkirjautunut user",
+    "author": "asdds",
     "url": "http://homepage.com",
-    "likes": 67,
-    "userId": "69454362d3e40b28fea5cfcb"
+    "likes": 7,
+    "userId": "69454380d3e40b28fea5cfcd"
 }

@@ -65,8 +65,8 @@ const App = () => {
   const handleNoteChange = event => {
     setNewNote(event.target.value)
   }
-const notesToShow = showAll ? notes : notes.filter(note => note.important)
   
+  const notesToShow = showAll ? notes : notes.filter(note => note.important)
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -89,6 +89,13 @@ const notesToShow = showAll ? notes : notes.filter(note => note.important)
         setErrorMessage(null)
       }, 5000)
     }
+  }
+
+  const handleLogout = (event) => {
+    event.preventDefault()
+    console.log('logging out')
+    window.localStorage.removeItem('loggedNoteappUser')
+    setUser(null)
   }
 
   const loginForm = () => (
@@ -117,6 +124,12 @@ const notesToShow = showAll ? notes : notes.filter(note => note.important)
     </form>
   )
 
+  const logoutForm = () => (
+    <form onSubmit={handleLogout}>
+      <button type="submit">logout</button>
+    </form>
+  )
+
   const noteForm = () => (
     <form onSubmit={addNote}>
       <input value={newNote} onChange={handleNoteChange} />
@@ -133,6 +146,7 @@ const notesToShow = showAll ? notes : notes.filter(note => note.important)
       {user && (
         <div>
           <p>{user.name} logged in</p>
+        {logoutForm()}
         {noteForm()}
         </div>
       )}

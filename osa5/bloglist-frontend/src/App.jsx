@@ -11,7 +11,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+      setBlogs(blogs)
     )  
   }, [])
 
@@ -42,6 +42,10 @@ const App = () => {
     } catch {
       console.log("error logging in")
     }
+  }
+
+  const myBlogs = () => {
+    return blogs.filter(blog => user.blogs.includes(blog.id))
   }
 
   if (user === null) {
@@ -85,7 +89,7 @@ const App = () => {
         </div>
       )}
 
-      {blogs.map(blog =>
+      {myBlogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
     </div>

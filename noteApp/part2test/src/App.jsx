@@ -65,8 +65,8 @@ const App = () => {
   const handleNoteChange = event => {
     setNewNote(event.target.value)
   }
-
-  const notesToShow = showAll ? notes : notes.filter(note => note.important)
+const notesToShow = showAll ? notes : notes.filter(note => note.important)
+  
 
   const handleLogin = async (event) => {
     event.preventDefault()

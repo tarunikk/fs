@@ -6,25 +6,41 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
+  const [newTitle, setTitle] = useState('')
+  const [newAuthor, setAuthor] = useState('')
+  const [newUrl, setUrl] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )  
-  }, [])
-
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
       blogService.setToken(user.token)
+      setBlogs(user.blogs)
     }
   }, [])
+
+  const addBlog = event => {
+    event.preventDefault()
+    console.log('creating a new blog', newTitle, newAuthor, newUrl)
+
+    const blogObject = {
+      title: newTitle,
+      author: newAuthor,
+      url: newUrl
+    }
+
+    blogService.create(blogObject).then(returnedBlog => {
+      setBlogs(user.blogs.concat(returnedBlog))
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+    })
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -41,6 +57,8 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+      setBlogs(user.blogs)
+      console.log(user.blogs)
     } catch {
       console.log("error logging in")
       setErrorMessage('wrong credentials')
@@ -48,10 +66,6 @@ const App = () => {
         setErrorMessage(null)
       }, 5000)
     }
-  }
-
-  const myBlogs = () => {
-    return blogs.filter(blog => user.blogs.includes(blog.id))
   }
 
   if (user === null) {
@@ -85,6 +99,52 @@ const App = () => {
     )
   }
 
+  const handleLogout = (event) => {
+    event.preventDefault()
+    console.log('logging out')
+    window.localStorage.removeItem('loggedBlogappUser')
+    setUser(null)
+  }
+
+  const logoutForm = () => (
+    <form onSubmit={handleLogout}>
+      <button type="submit">logout</button>
+    </form>
+  )
+
+  const blogForm = () => (
+    <form onSubmit={addBlog}>
+      <div>
+        <label>
+          title:
+          <input
+            value={newTitle}
+            onChange={({ target }) => setTitle(target.value)}
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          author:
+          <input
+            value={newAuthor}
+            onChange={({ target }) => setAuthor(target.value)}
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          url:
+          <input
+            value={newUrl}
+            onChange={({ target }) => setUrl(target.value)}
+          />
+        </label>
+      </div>
+      <button type="submit">create</button>
+    </form>
+  )
+
   return (
     <div>
       <h2>blogs</h2>
@@ -93,12 +153,17 @@ const App = () => {
       {user && (
         <div>
           <p>{user.name} logged in</p>
+          {logoutForm()}
+
+          <h2>create new</h2>
+          {blogForm()}
         </div>
       )}
 
-      {myBlogs.map(blog =>
+      { blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
-      )}
+        )
+      }
     </div>
   )
 }

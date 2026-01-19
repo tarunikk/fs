@@ -15,12 +15,17 @@ const App = () => {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
+    blogService.getAll().then(initialBlogs => {
+      setBlogs(initialBlogs)
+    })
+  }, [])
+
+  useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
       blogService.setToken(user.token)
-      setBlogs(user.blogs)
     }
   }, [])
 
@@ -34,12 +39,25 @@ const App = () => {
       url: newUrl
     }
 
-    blogService.create(blogObject).then(returnedBlog => {
-      setBlogs(user.blogs.concat(returnedBlog))
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-    })
+    blogService
+      .create(blogObject)
+      .then(returnedBlog => {
+        setBlogs(user.blogs.concat(returnedBlog))
+        setTitle('')
+        setAuthor('')
+        setUrl('')
+        setErrorMessage(`a new blog '${newTitle}' by '${newAuthor}' added`)
+        setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+      })
+      .catch(() => {
+        console.log('creating a new blog failed')
+        setErrorMessage(`fill all boxes`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      })     
   }
 
   const handleLogin = async (event) => {
@@ -57,8 +75,6 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-      setBlogs(user.blogs)
-      console.log(user.blogs)
     } catch {
       console.log("error logging in")
       setErrorMessage('wrong credentials')
@@ -72,6 +88,7 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
+        <Notification message={errorMessage} />
         <form onSubmit={handleLogin}>
           <div>
             <label>
@@ -164,6 +181,7 @@ const App = () => {
         <Blog key={blog.id} blog={blog} />
         )
       }
+      
     </div>
   )
 }

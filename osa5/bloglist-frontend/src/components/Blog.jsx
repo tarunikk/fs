@@ -35,9 +35,10 @@ const Blog = ({ blog }) => {
         {blog.title} <br />
         {blog.author}<br />
         {blog.url}
-        <p>
+        <p> 
           Likes: {blog.likes}
-        </p>
+          <button onClick={toggleView}>like</button>
+        </p> 
         <button onClick={toggleView}>hide</button>
       </div>
     </div>

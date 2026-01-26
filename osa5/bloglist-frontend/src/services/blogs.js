@@ -21,4 +21,9 @@ const getAll = () => {
   return request.then(response => response.data)
 }
 
-export default { getAll, setToken, create }
+const addLike = (id, likes) => {
+  const request = axios.put(`${baseUrl}/${id}`, { likes: likes + 1 })
+  return request.then((response) => response.data)
+}
+
+export default { getAll, setToken, create, addLike }

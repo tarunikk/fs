@@ -53,6 +53,18 @@ const App = () => {
       })     
   }
 
+  const addLikeTo = (id) => {
+    const blog = blogs.find(b => b.id === id)
+    const changedBlog = { ...blog, likes: blog.likes +1 }
+    
+    blogService
+      .addLike(id, changedBlog)
+      .then(returnedBlog => {
+        setBlogs(blogs.map(blog => (blog.id !== id ? blog : returnedBlog)))
+        console.log(`Added like to '${changedBlog.title}'. Total likes: '${changedBlog.likes}'`)
+      })
+  }
+
   const handleLogin = async (event) => {
     event.preventDefault()
     console.log('logging in with', username, password)
@@ -141,6 +153,7 @@ const App = () => {
         <Blog 
           key={blog.id} 
           blog={blog}
+          addLike={() => addLikeTo(blog.id)}
           />
         )
       }

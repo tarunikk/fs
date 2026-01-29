@@ -21,8 +21,8 @@ const getAll = () => {
   return request.then(response => response.data)
 }
 
-const addLike = (id, likes) => {
-  const request = axios.put(`${baseUrl}/${id}`, { likes: likes + 1 })
+const addLike = (id, newObject) => {
+  const request = axios.put(`${baseUrl}/${id}`, newObject)
   return request.then((response) => response.data)
 }
 

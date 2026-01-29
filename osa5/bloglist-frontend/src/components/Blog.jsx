@@ -35,10 +35,12 @@ const Blog = ({ blog, addLike, removeBlog }) => {
         {blog.title} <br />
         {blog.author}<br />
         {blog.url}
-        <p> 
+        <div> 
           Likes: {blog.likes}
           <button onClick={addLike}>like</button>
-        </p>
+        </div>
+        {blog.user && 
+          <div>{blog.user.name}</div>}
         <button onClick={toggleView}>hide</button>
         <button onClick={removeBlog}>delete</button>
       </div>

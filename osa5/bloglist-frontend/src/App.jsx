@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
+import axios from 'axios'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
-
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -51,6 +51,30 @@ const App = () => {
           setErrorMessage(null)
         }, 5000)
       })     
+  }
+
+  //Poistaminen toimii, muttei tarkita että poistaja on blogin lisääjä
+  const removeBlog = ( blog ) => {
+    if (confirm(`Do you want to remove ${blog.title} by ${blog.author}?`)) {
+      axios.delete(`/api/blogs/${blog.id}`)      
+        .then(response => {  
+          setBlogs(blogs.filter(b => b.id !== blog.id))
+          console.log(`Blog ${blog.title} deleted`)
+          setErrorMessage( `removed '${blog.title}' `)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 10000)
+          console.log(response) })
+        .catch(error => {
+          console.log(error.response.data)
+          setErrorMessage(`${error.response.data.error}`)
+          setTimeout(() => {
+          setErrorMessage(null)
+        }, 10000)
+        })
+    } else {
+      return
+    }   
   }
 
   const addLikeTo = (id) => {
@@ -154,6 +178,7 @@ const App = () => {
           key={blog.id} 
           blog={blog}
           addLike={() => addLikeTo(blog.id)}
+          removeBlog = {() => removeBlog(blog)}
           />
         )
       }

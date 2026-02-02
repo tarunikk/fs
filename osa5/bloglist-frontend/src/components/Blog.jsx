@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({ blog, addLike, removeBlog }) => {
+const Blog = ({ blog, addLike, removeBlog, user }) => {
   const [view, setView] = useState(true)
 
   const toggleView = () => {
@@ -42,7 +42,13 @@ const Blog = ({ blog, addLike, removeBlog }) => {
         {blog.user && 
           <div>{blog.user.name}</div>}
         <button onClick={toggleView}>hide</button>
-        <button onClick={removeBlog}>delete</button>
+        {blog.user && 
+        <div>
+          {blog.user.name === user.name &&
+            <button onClick={removeBlog}>delete</button>
+          }
+        </div>
+        }
       </div>
     </div>
 )}

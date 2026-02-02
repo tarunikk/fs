@@ -7,6 +7,10 @@ import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
+// Osa5
+// 5.5-5.8 ja 5.11 toimii oikein
+// 5.9 korjaa: "Kun blogia liketetään, ei blogin lisääjän nimeä näytetä enää blogin tarkempien tietojen joukossa"
+// 5.10 blogit like-järjestykseen
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [errorMessage, setErrorMessage] = useState(null)
@@ -53,7 +57,6 @@ const App = () => {
       })     
   }
 
-  //Poistaminen toimii, muttei tarkita että poistaja on blogin lisääjä
   const removeBlog = ( blog ) => {
     if (confirm(`Do you want to remove ${blog.title} by ${blog.author}?`)) {
       axios.delete(`/api/blogs/${blog.id}`)      
@@ -177,12 +180,12 @@ const App = () => {
         <Blog 
           key={blog.id} 
           blog={blog}
+          user={user}
           addLike={() => addLikeTo(blog.id)}
           removeBlog = {() => removeBlog(blog)}
           />
         )
       }
-      
     </div>
   )
 }

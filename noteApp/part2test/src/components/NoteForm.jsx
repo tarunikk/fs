@@ -1,7 +1,6 @@
-/* eslint-disable react/prop-types */
 import { useState } from 'react'
 
-// Tilan muuttuja newNote ja sen muutoksesta huolehtiva tapahtumankäsittelijä on 
+// Tilan muuttuja newNote ja sen muutoksesta huolehtiva tapahtumankäsittelijä on
 // siirretty komponentista App lomakkeesta huolehtivaan komponenttiin.
 const NoteForm = ({ createNote  }) => {
   const [newNote, setNewNote] = useState('')

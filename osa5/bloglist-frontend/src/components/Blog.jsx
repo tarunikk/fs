@@ -35,14 +35,14 @@ const Blog = ({ blog, addLike, removeBlog, user }) => {
         {blog.title} <br />
         {blog.author}<br />
         {blog.url}
-        <div> 
+        <div>
           Likes: {blog.likes}
           <button onClick={addLike}>like</button>
         </div>
-        {blog.user && 
+        {blog.user &&
           <div>{blog.user.name}</div>}
         <button onClick={toggleView}>hide</button>
-        {blog.user && 
+        {blog.user &&
         <div>
           {blog.user.name === user.name &&
             <button onClick={removeBlog}>delete</button>
@@ -51,6 +51,6 @@ const Blog = ({ blog, addLike, removeBlog, user }) => {
         }
       </div>
     </div>
-)}
+  )}
 
 export default Blog

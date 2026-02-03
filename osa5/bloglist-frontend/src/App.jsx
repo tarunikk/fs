@@ -45,22 +45,22 @@ const App = () => {
         console.log('new blog created')
         setErrorMessage(`a new blog '${returnedBlog.title}' by '${returnedBlog.author}' added`)
         setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+          setErrorMessage(null)
+        }, 5000)
       })
       .catch(() => {
         console.log('creating a new blog failed')
-        setErrorMessage(`fill all boxes`)
+        setErrorMessage('fill all boxes')
         setTimeout(() => {
           setErrorMessage(null)
         }, 5000)
-      })     
+      })
   }
 
   const removeBlog = ( blog ) => {
     if (confirm(`Do you want to remove ${blog.title} by ${blog.author}?`)) {
-      axios.delete(`/api/blogs/${blog.id}`)      
-        .then(response => {  
+      axios.delete(`/api/blogs/${blog.id}`)
+        .then(response => {
           setBlogs(blogs.filter(b => b.id !== blog.id))
           console.log(`Blog ${blog.title} deleted`)
           setErrorMessage( `removed '${blog.title}' `)
@@ -72,25 +72,25 @@ const App = () => {
           console.log(error.response.data)
           setErrorMessage(`${error.response.data.error}`)
           setTimeout(() => {
-          setErrorMessage(null)
-        }, 10000)
+            setErrorMessage(null)
+          }, 10000)
         })
     } else {
       return
-    }   
+    }
   }
 
   const addLikeTo = (id) => {
     const blog = blogs.find(b => b.id === id)
     const changedBlog = { ...blog, likes: blog.likes +1 }
-    console.log("bbb", changedBlog.user)
-    
+    console.log('bbb', changedBlog.user)
+
     blogService
       .addLike(id, changedBlog)
       .then(returnedBlog => {
-        console.log("eee", returnedBlog.user)
+        console.log('eee', returnedBlog.user)
         returnedBlog.user = changedBlog.user
-        console.log("fff", returnedBlog.user)
+        console.log('fff', returnedBlog.user)
         setBlogs(blogs.map(blog => (blog.id !== id ? blog : returnedBlog)))
         console.log(`Added like to '${changedBlog.title}'. Total likes: '${changedBlog.likes}'`)
       })
@@ -112,7 +112,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch {
-      console.log("error logging in")
+      console.log('error logging in')
       setErrorMessage('wrong credentials')
       setTimeout(() => {
         setErrorMessage(null)
@@ -169,7 +169,7 @@ const App = () => {
     <div>
       <h2>blogs</h2>
       <Notification message={errorMessage} />
-      
+
       {user && (
         <div>
           <p>{user.name} logged in</p>
@@ -181,14 +181,14 @@ const App = () => {
       )}
 
       { blogs.map(blog =>
-        <Blog 
-          key={blog.id} 
+        <Blog
+          key={blog.id}
           blog={blog}
           user={user}
           addLike={() => addLikeTo(blog.id)}
           removeBlog = {() => removeBlog(blog)}
-          />
-        )
+        />
+      )
       }
     </div>
   )

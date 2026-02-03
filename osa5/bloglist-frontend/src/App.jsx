@@ -8,9 +8,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 
 // Osa5
-// 5.5-5.8 ja 5.11 toimii oikein
-// 5.9 korjaa: "Kun blogia liketetään, ei blogin lisääjän nimeä näytetä enää blogin tarkempien tietojen joukossa"
-// 5.10 blogit like-järjestykseen
+// 5.5-5.11 toimii oikein
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [errorMessage, setErrorMessage] = useState(null)
@@ -22,6 +20,8 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(initialBlogs => {
+      initialBlogs.sort((a, b) => a.likes - b.likes)
+      initialBlogs.reverse()
       setBlogs(initialBlogs)
     })
   }, [])
@@ -83,10 +83,14 @@ const App = () => {
   const addLikeTo = (id) => {
     const blog = blogs.find(b => b.id === id)
     const changedBlog = { ...blog, likes: blog.likes +1 }
+    console.log("bbb", changedBlog.user)
     
     blogService
       .addLike(id, changedBlog)
       .then(returnedBlog => {
+        console.log("eee", returnedBlog.user)
+        returnedBlog.user = changedBlog.user
+        console.log("fff", returnedBlog.user)
         setBlogs(blogs.map(blog => (blog.id !== id ? blog : returnedBlog)))
         console.log(`Added like to '${changedBlog.title}'. Total likes: '${changedBlog.likes}'`)
       })

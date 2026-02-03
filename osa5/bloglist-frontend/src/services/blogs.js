@@ -22,7 +22,9 @@ const getAll = () => {
 }
 
 const addLike = (id, newObject) => {
-  const request = axios.put(`${baseUrl}/${id}`, newObject)
+  const request =  axios.put(`${baseUrl}/${id}`, newObject)
+  console.log("ccc", newObject)
+  console.log("ddd", request)
   return request.then((response) => response.data)
 }
 

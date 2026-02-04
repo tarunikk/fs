@@ -17,6 +17,7 @@ const App = () => {
   const [user, setUser] = useState(null)
 
   const blogFormRef = useRef()
+  const blogRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(initialBlogs => {
@@ -187,6 +188,7 @@ const App = () => {
           user={user}
           addLike={() => addLikeTo(blog.id)}
           removeBlog = {() => removeBlog(blog)}
+          ref ={blogRef}
         />
       )
       }

@@ -6,6 +6,7 @@ import userEvent from '@testing-library/user-event'
 describe('<BlogView />', () =>  {
   beforeEach(() => {
     const blog = {
+      id: 123,
       title: 'Title of a blog',
       author: 'joku',
       url: 'esim.com',
@@ -15,7 +16,7 @@ describe('<BlogView />', () =>  {
     render(
       <BlogView preview={blog.title + ' ' + blog.author}>
         <div>togglable content</div>
-        <Blog blog={blog} />
+        <Blog blog={blog}/>
       </BlogView>
     )
 
@@ -42,10 +43,39 @@ describe('<BlogView />', () =>  {
 
   test('after clicking the button, children are displayed', async () => {
     const user = userEvent.setup()
-    const button = screen.getByText('show')
-    await user.click(button)
+    const showButton = screen.getByText('show')
+    await user.click(showButton)
 
-    const element = screen.getByText('Likes: 10')
-    expect(element).toBeVisible()
+    const element1 = screen.getByText('Likes: 10')
+    expect(element1).toBeVisible()
+    const element2 = screen.getByText('esim.com', { exact: false })
+    expect(element2).toBeVisible()
   })
+})
+
+test('after clicking the like button twice, addLikeTo is called twice', async () => {
+  const blog = {
+    title: 'Title of a blog',
+    author: 'joku',
+    url: 'esim.com',
+    likes: 10
+  }
+
+  const addLikeTo = vi.fn()
+
+  render(
+    <BlogView preview={blog.title + ' ' + blog.author}>
+      <Blog blog={blog} addLike={addLikeTo} />
+    </BlogView>
+  )
+
+  const user = userEvent.setup()
+  const showButton = screen.getByText('show')
+  await user.click(showButton)
+  const likeButton = screen.getByText('like')
+  await user.click(likeButton)
+  await user.click(likeButton)
+  expect(addLikeTo.mock.calls).toHaveLength(2)
+
+  console.log(addLikeTo.mock.calls)
 })

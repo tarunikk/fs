@@ -6,6 +6,7 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import BlogView from './components/BlogView'
 
 // Osa5
 // 5.5-5.11 toimii oikein
@@ -17,7 +18,6 @@ const App = () => {
   const [user, setUser] = useState(null)
 
   const blogFormRef = useRef()
-  const blogRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(initialBlogs => {
@@ -182,16 +182,17 @@ const App = () => {
       )}
 
       { blogs.map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-          user={user}
-          addLike={() => addLikeTo(blog.id)}
-          removeBlog = {() => removeBlog(blog)}
-          ref ={blogRef}
-        />
-      )
-      }
+        <div key={blog.id}>
+          <BlogView preview={blog.title + ' ' + blog.author}>
+            <Blog
+              blog={blog}
+              user={user}
+              addLike={() => addLikeTo(blog.id)}
+              removeBlog={() => removeBlog(blog)}
+            />
+          </BlogView>
+        </div>
+      )}
     </div>
   )
 }

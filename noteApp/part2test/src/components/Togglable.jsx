@@ -1,4 +1,4 @@
-import { useState, useImperativeHandle } from 'react'
+import { useState } from 'react'
 
 const Togglable = (props) => {
   const [visible, setVisible] = useState(false)
@@ -10,10 +10,10 @@ const Togglable = (props) => {
     setVisible(!visible)
   }
 
-  // React hook, jonka avulla komponentille voidaan määrittää funktioita, joita on mahdollista kutsua sen ulkopuolelta
+  /* React hook, jonka avulla komponentille voidaan määrittää funktioita, joita on mahdollista kutsua sen ulkopuolelta
   useImperativeHandle(props.ref, () => {
     return { toggleVisibility }
-  })
+  })*/
 
   return (
     <div>

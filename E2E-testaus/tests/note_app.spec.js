@@ -54,7 +54,6 @@ describe('Note app', () => {
       await createNote(page, 'a note created by playwright')
       await expect(page.getByText('a note created by playwright')).toBeVisible()
     })
-
     
     describe('and a note exists', () => {
       beforeEach(async ({ page }) => {
@@ -77,6 +76,7 @@ describe('Note app', () => {
       })
 
       test('one of those can be made nonimportant', async ({ page }) => {
+        await page.pause()
         const otherNoteText = page.getByText('second note')
         const otherNoteElement = otherNoteText.locator('..')
 

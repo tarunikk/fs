@@ -28,7 +28,7 @@ const BlogView = ( props) => {
   return (
     <div>
       <div style={blogStyle}>
-        {props.preview}
+        <span>{props.preview}</span>
         <button onClick={toggleView}>show</button>
       </div>
       <div style={blogViewStyle}>

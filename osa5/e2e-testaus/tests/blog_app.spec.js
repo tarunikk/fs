@@ -85,5 +85,18 @@ describe('Blog app', () => {
         await expect(page.getByRole('button', { name: 'delete' })).not.toBeVisible()
       })
     })
+
+    describe('blogs are in order of likes', () => {
+      beforeEach(async ({ page }) => {
+        await createBlog(page, 'first blog', 'anonymous author', 'www.example.com')
+      })
+  
+      test('blog can be liked', async ({ page }) => {
+        await page.getByRole('button', { name: 'show' }).click()
+        await expect(page.getByText('Likes: 0')).toBeVisible()
+        await page.getByRole('button', { name: 'like' }).click()
+        await expect(page.getByText('Likes: 1')).toBeVisible()
+      })
+    })
   })
 })

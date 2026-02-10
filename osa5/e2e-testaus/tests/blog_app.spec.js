@@ -11,6 +11,13 @@ describe('Blog app', () => {
         password: 'salainen'
       }
     })
+    await request.post('http://localhost:3003/api/users', {
+      data: {
+        name: 'Taru',
+        username: 'tksnikka',
+        password: 'salasana'
+      }
+    })
 
     await page.goto('http://localhost:5173')
   })
@@ -27,9 +34,7 @@ describe('Blog app', () => {
     })
 
     test('fails with wrong credentials', async ({ page }) => {
-      await page.getByLabel('username').fill('mluukkai')
-      await page.getByLabel('password').fill('wrong')
-      await page.getByRole('button', { name: 'login' }).click()
+      await loginWith(page, 'mluukkai', 'wrong')
 
       const errorDiv = page.locator('.error')
       await expect(errorDiv).toContainText('wrong credentials')
@@ -42,9 +47,7 @@ describe('Blog app', () => {
 
   describe('When logged in', () => {
     beforeEach(async ({ page }) => {
-      await page.getByLabel('username').fill('mluukkai')
-      await page.getByLabel('password').fill('salainen')
-      await page.getByRole('button', { name: 'login' }).click()
+      await loginWith(page, 'mluukkai', 'salainen')
     })
 
     test('a new blog can be created', async ({ page }) => {
@@ -56,11 +59,7 @@ describe('Blog app', () => {
 
     describe('and a blog exists', () => {
       beforeEach(async ({ page }) => {
-        await page.getByRole('button', { name: 'new blog' }).click()
-        await page.getByLabel('title').fill('a blog to like and delete')
-        await page.getByLabel('author').fill('anonymous author')
-        await page.getByLabel('url').fill('www.example.com')
-        await page.getByRole('button', { name: 'create' }).click()
+        await createBlog(page, 'a blog to like and delete', 'anonymous author', 'www.example.com')
       })
   
       test('blog can be liked', async ({ page }) => {
@@ -77,6 +76,13 @@ describe('Blog app', () => {
 
         await expect(page.getByText(`removed 'a blog to like and delete'`)).toBeVisible()
         await expect(page.getByText('a blog to like and delete anonymous author')).not.toBeVisible()
+      })
+
+      test('blog can only be deleted by its creator', async ({ page }) => {
+        await page.getByRole('button', { name: 'logout' }).click()
+        await loginWith(page, 'tksnikka', 'salasana')
+        await page.getByRole('button', { name: 'show' }).click()
+        await expect(page.getByRole('button', { name: 'delete' })).not.toBeVisible()
       })
     })
   })

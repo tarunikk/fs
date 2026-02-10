@@ -42,6 +42,7 @@ const App = () => {
     blogService
       .create(blogObject)
       .then(returnedBlog => {
+        returnedBlog.user = user
         setBlogs(blogs.concat(returnedBlog))
         console.log('new blog created')
         setErrorMessage(`a new blog '${returnedBlog.title}' by '${returnedBlog.author}' added`)
@@ -89,9 +90,7 @@ const App = () => {
     blogService
       .addLike(id, changedBlog)
       .then(returnedBlog => {
-        console.log('eee', returnedBlog.user)
         returnedBlog.user = changedBlog.user
-        console.log('fff', returnedBlog.user)
         setBlogs(blogs.map(blog => (blog.id !== id ? blog : returnedBlog)))
         console.log(`Added like to '${changedBlog.title}'. Total likes: '${changedBlog.likes}'`)
       })

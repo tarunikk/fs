@@ -11,13 +11,6 @@ describe('Blog app', () => {
         password: 'salainen'
       }
     })
-    await request.post('http://localhost:3003/api/users', {
-      data: {
-        name: 'Taru',
-        username: 'tksnikka',
-        password: 'salasana'
-      }
-    })
 
     await page.goto('http://localhost:5173')
   })
@@ -78,7 +71,14 @@ describe('Blog app', () => {
         await expect(page.getByText('a blog to like and delete anonymous author')).not.toBeVisible()
       })
 
-      test('blog can only be deleted by its creator', async ({ page }) => {
+      test('blog can only be deleted by its creator', async ({ page, request }) => {
+        await request.post('http://localhost:3003/api/users', {
+          data: {
+            name: 'Taru',
+            username: 'tksnikka',
+            password: 'salasana'
+          }
+        })
         await page.getByRole('button', { name: 'logout' }).click()
         await loginWith(page, 'tksnikka', 'salasana')
         await page.getByRole('button', { name: 'show' }).click()
@@ -89,12 +89,14 @@ describe('Blog app', () => {
     describe('blogs are in order of likes', () => {
       beforeEach(async ({ page }) => {
         await createBlog(page, 'first blog', 'anonymous author', 'www.example.com')
+        await createBlog(page, 'second blog', 'unknown', 'www.somewhere.com')
+        await createBlog(page, 'third blog', 'another one', 'www.wbsite.com')
       })
   
       test('blog can be liked', async ({ page }) => {
-        await page.getByRole('button', { name: 'show' }).click()
-        await expect(page.getByText('Likes: 0')).toBeVisible()
-        await page.getByRole('button', { name: 'like' }).click()
+        await page.getByRole('button', { name: 'show' }).first().click()
+        await page.getByRole('button', { name: 'show' }).first().click()
+        await page.getByRole('button', { name: 'like' }).nth(1).click()
         await expect(page.getByText('Likes: 1')).toBeVisible()
       })
     })

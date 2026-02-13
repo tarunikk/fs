@@ -68,11 +68,11 @@ describe('Note app', () => {
 
     describe('and several notes exists', () => {    
       beforeEach(async ({ page }) => {
-            await createNote(page, 'first note')
-            await page.getByRole('button', { name: 'cancel' }).click()
-            await createNote(page, 'second note')
-            await page.getByRole('button', { name: 'cancel' }).click()
-            await createNote(page, 'third note')
+        await createNote(page, 'first note')
+        await page.getByRole('button', { name: 'cancel' }).click()
+        await createNote(page, 'second note')
+        await page.getByRole('button', { name: 'cancel' }).click()
+        await createNote(page, 'third note')
       })
 
       test('one of those can be made nonimportant', async ({ page }) => {

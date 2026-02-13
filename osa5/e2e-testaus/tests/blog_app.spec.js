@@ -93,11 +93,41 @@ describe('Blog app', () => {
         await createBlog(page, 'third blog', 'another one', 'www.wbsite.com')
       })
   
-      test('blog can be liked', async ({ page }) => {
+      test('blog with two likes is at the top', async ({ page }) => {
         await page.getByRole('button', { name: 'show' }).first().click()
         await page.getByRole('button', { name: 'show' }).first().click()
         await page.getByRole('button', { name: 'like' }).nth(1).click()
         await expect(page.getByText('Likes: 1')).toBeVisible()
+        await page.getByRole('button', { name: 'like' }).first().click()
+        await expect(page.getByText('Likes: 2')).toBeVisible()
+      })
+
+      test('blog with most likes is at the top', async ({ page }) => {
+        const firstBlogText = page.getByText('first blog anonymous author')
+        const firstBlogElement = firstBlogText.locator('..')
+        console.log(firstBlogElement.all())
+        const secondBlogText = page.getByText('second blog unknown')
+        const secondBlogElement = secondBlogText.locator('..')
+        const thirdBlogText = page.getByText('third blog another one')
+        const thirdBlogElement = thirdBlogText.locator('..')
+
+        await firstBlogElement.getByRole('button', { name: 'show' }).click()
+        await secondBlogElement.getByRole('button', { name: 'show' }).click()
+        await thirdBlogElement.getByRole('button', { name: 'show' }).click()
+
+        await expect(page.getByRole('listitem').first()).toHaveText('first blog anonymous author www.example.comLikes: 0likeMatti Luukkainendelete')
+  
+        await secondBlogElement.getByRole('button', { name: 'like' }).click()
+        await expect(secondBlogElement.getByText('Likes: 1')).toBeVisible()
+
+        await expect(page.getByRole('listitem').first()).toHaveText('second blog unknown www.somewhere.comLikes: 1likeMatti Luukkainendelete')
+
+        await thirdBlogElement.getByRole('button', { name: 'like' }).click()
+        await expect(thirdBlogElement.getByText('Likes: 1')).toBeVisible()
+        await thirdBlogElement.getByRole('button', { name: 'like' }).click()
+        await expect(thirdBlogElement.getByText('Likes: 2')).toBeVisible()
+
+        await expect(page.getByRole('listitem').first()).toHaveText('third blog another one www.wbsite.comLikes: 2likeMatti Luukkainendelete')
       })
     })
   })

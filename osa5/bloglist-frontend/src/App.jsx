@@ -21,8 +21,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(initialBlogs => {
-      initialBlogs.sort((a, b) => a.likes - b.likes)
-      initialBlogs.reverse()
+      sortByLikes(initialBlogs)
       setBlogs(initialBlogs)
     })
   }, [])
@@ -85,15 +84,20 @@ const App = () => {
   const addLikeTo = (id) => {
     const blog = blogs.find(b => b.id === id)
     const changedBlog = { ...blog, likes: blog.likes +1 }
-    console.log('bbb', changedBlog.user)
 
     blogService
       .addLike(id, changedBlog)
       .then(returnedBlog => {
         returnedBlog.user = changedBlog.user
-        setBlogs(blogs.map(blog => (blog.id !== id ? blog : returnedBlog)))
+        setBlogs(sortByLikes(blogs.map(blog => (blog.id !== id ? blog : returnedBlog))))
         console.log(`Added like to '${changedBlog.title}'. Total likes: '${changedBlog.likes}'`)
       })
+  }
+
+  const sortByLikes = (blogs) => {
+    blogs.sort((a, b) => a.likes - b.likes)
+    blogs.reverse()
+    return blogs
   }
 
   const handleLogin = async (event) => {
@@ -106,7 +110,7 @@ const App = () => {
       })
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
-      ) // Kirjautuneen käyttäjän tiedot tallentuvat nyt local storageen ja niitä voidaan tarkastella konsolista (kirjoittamalla konsoliin window.localStorage)
+      )
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')

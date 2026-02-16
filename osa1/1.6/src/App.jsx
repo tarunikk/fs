@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+//1.6-1.11
 const Statistics = (prop1, prop2, prop3) => {
 
   const all = prop1 + prop2 + prop3

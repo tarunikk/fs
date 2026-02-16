@@ -3,8 +3,8 @@ const { createBlog, loginWith } = require('./helper')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
-    await request.post('http://localhost:3003/api/testing/reset')
-    await request.post('http://localhost:3003/api/users', {
+    await request.post('/api/testing/reset')
+    await request.post('/api/users', {
       data: {
         name: 'Matti Luukkainen',
         username: 'mluukkai',
@@ -12,7 +12,7 @@ describe('Blog app', () => {
       }
     })
 
-    await page.goto('http://localhost:5173')
+    await page.goto('/')
   })
 
   test('Login form is shown', async ({ page }) => {
@@ -72,7 +72,7 @@ describe('Blog app', () => {
       })
 
       test('blog can only be deleted by its creator', async ({ page, request }) => {
-        await request.post('http://localhost:3003/api/users', {
+        await request.post('/api/users', {
           data: {
             name: 'Taru',
             username: 'tksnikka',
@@ -91,43 +91,44 @@ describe('Blog app', () => {
         await createBlog(page, 'first blog', 'anonymous author', 'www.example.com')
         await createBlog(page, 'second blog', 'unknown', 'www.somewhere.com')
         await createBlog(page, 'third blog', 'another one', 'www.wbsite.com')
-      })
-  
-      test('blog with two likes is at the top', async ({ page }) => {
+
         await page.getByRole('button', { name: 'show' }).first().click()
         await page.getByRole('button', { name: 'show' }).first().click()
-        await page.getByRole('button', { name: 'like' }).nth(1).click()
-        await expect(page.getByText('Likes: 1')).toBeVisible()
-        await page.getByRole('button', { name: 'like' }).first().click()
-        await expect(page.getByText('Likes: 2')).toBeVisible()
+        await page.getByRole('button', { name: 'show' }).first().click()
       })
 
-      test('blog with most likes is at the top', async ({ page }) => {
-        const firstBlogText = page.getByText('first blog anonymous author')
-        const firstBlogElement = firstBlogText.locator('..')
-        console.log(firstBlogElement.all())
-        const secondBlogText = page.getByText('second blog unknown')
-        const secondBlogElement = secondBlogText.locator('..')
-        const thirdBlogText = page.getByText('third blog another one')
-        const thirdBlogElement = thirdBlogText.locator('..')
-
-        await firstBlogElement.getByRole('button', { name: 'show' }).click()
-        await secondBlogElement.getByRole('button', { name: 'show' }).click()
-        await thirdBlogElement.getByRole('button', { name: 'show' }).click()
-
+      test('in the beginning the first created blog is at the top', async ({ page }) => {      
         await expect(page.getByRole('listitem').first()).toHaveText('first blog anonymous author www.example.comLikes: 0likeMatti Luukkainendelete')
-  
+      })
+
+      test('second blog is at the top when it has a like', async ({ page }) => {     
+        const secondBlogText = page.getByText('second blog unknown')
+        const secondBlogElement = secondBlogText.locator('..') 
+
         await secondBlogElement.getByRole('button', { name: 'like' }).click()
         await expect(secondBlogElement.getByText('Likes: 1')).toBeVisible()
 
         await expect(page.getByRole('listitem').first()).toHaveText('second blog unknown www.somewhere.comLikes: 1likeMatti Luukkainendelete')
+      })
+      
+      test('third blog with most likes is at the top', async ({ page }) => {
+        const secondBlogText = page.getByText('second blog unknown')
+        const secondBlogElement = secondBlogText.locator('..') 
+        const thirdBlogText = page.getByText('third blog another one')
+        const thirdBlogElement = thirdBlogText.locator('..')
+
+        await secondBlogElement.getByRole('button', { name: 'like' }).click()
+        await expect(secondBlogElement.getByText('Likes: 1')).toBeVisible()
 
         await thirdBlogElement.getByRole('button', { name: 'like' }).click()
         await expect(thirdBlogElement.getByText('Likes: 1')).toBeVisible()
         await thirdBlogElement.getByRole('button', { name: 'like' }).click()
         await expect(thirdBlogElement.getByText('Likes: 2')).toBeVisible()
 
+        // Kun kolmannelle blogille 'third blog' lisätään kaksi likeä, se on listan ensimmäisenä, second toisena yhdellä likellä ja first viimeisenä
         await expect(page.getByRole('listitem').first()).toHaveText('third blog another one www.wbsite.comLikes: 2likeMatti Luukkainendelete')
+        await expect(page.getByRole('listitem').nth(1)).toHaveText('second blog unknown www.somewhere.comLikes: 1likeMatti Luukkainendelete')
+        await expect(page.getByRole('listitem').last()).toHaveText('first blog anonymous author www.example.comLikes: 0likeMatti Luukkainendelete')
       })
     })
   })

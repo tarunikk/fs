@@ -1,0 +1,37 @@
+ sequenceDiagram
+    participant browser
+    participant server
+
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
+    activate server
+    Note right of browser: The browser sends a POST request with the form data for a new notes content
+    server-->>browser: Redirect
+    deactivate server
+    Note right of browser: The server responds with redirect, prompting the browser to make further GET requests
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
+    activate server
+    server-->>browser: HTML document
+    deactivate server
+
+    Note right of browser: Browser fetches HTML document that defines the pages content and layout
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+    activate server
+    server-->>browser: the css file
+    deactivate server
+
+    Note right of browser: Browser fetches css file that that defines the pages styles
+    
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
+    activate server
+    Note right of browser: Browser fetches main.js containing javascript
+    server-->>browser: the JavaScript file
+    deactivate server
+    Note right of browser: Browser begins executing the javascript and requests the note content
+    
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+    activate server
+    server-->>browser: [{ "content": "form data is sent with HTTP POST", "date": "2023-1-1" }, ... ]
+    Note right of browser: Notes, including the new note, are rendered
+    deactivate server    

@@ -13,28 +13,48 @@ const Statistics = (prop1, prop2, prop3) => {
   }
   
   return(
-    <div>
-      <StatisticLine text="Good" value ={prop1} />
-      <StatisticLine text="Neutral" value ={prop2} />
-      <StatisticLine text="Bad" value ={prop3} />
-      <StatisticLine text="All" value ={all} />
-      <StatisticLine text="Average" value ={(prop1-prop3)/all} />
-      <StatisticLine text="Positive" value = {prop1/all*100} percent = {'%'}/> 
-    </div>
+    <table>
+      <tbody>
+        <tr>
+          <td>Good</td>
+          <td><StatisticLine value ={prop1} /></td>
+        </tr>
+        <tr>
+          <td>Neutral</td>
+          <td><StatisticLine value ={prop2} /></td>
+        </tr>
+        <tr>
+          <td>Bad</td>
+          <td><StatisticLine value ={prop3} /></td>
+        </tr>
+        <tr>
+          <td>All</td>
+          <td><StatisticLine value ={all} /></td>
+        </tr>
+        <tr>
+          <td>Average</td>
+          <td><StatisticLine value ={(prop1-prop3)/all} /></td>
+        </tr>
+        <tr>
+          <td>Positive</td>
+          <td><StatisticLine value ={prop1/all*100} percent = {'%'} /></td>
+        </tr>
+      </tbody>
+    </table>
   )
 }
 
 const StatisticLine = (parts) => {
   return (
     <div>
-      <p>{parts.text} {parts.value} {parts.percent}</p>
+      <p>{parts.value} {parts.percent}</p>
     </div>
   )
 }
 
-const Button = (props) => (
+const Button = (props) => {
   <button onClick={props.handleClick} > {props.text} </button>
-)
+}
 
 const App = () => {
 

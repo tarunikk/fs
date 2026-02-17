@@ -8,12 +8,24 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
 
+function getMostLiked(votes) { 
+  var maxVotes = votes[0]
+  var maxIndex = 0
+  for(let i = 1; i< votes.length; i++) {
+    if (votes[i]> maxVotes) {
+      maxIndex = i
+      maxVotes = votes[i]
+    }
+  }
+  console.log('index of most liked: ', maxIndex)
+  return maxIndex
+}
+
 const votes = [
   0, 0, 0, 0, 0, 0, 0, 0
 ]
 
 const copy = [...votes]
-
 
 
 const App = () => {
@@ -31,25 +43,35 @@ const App = () => {
 
   const [selected, setSelected] = useState(0)
   const [vote, setVote] = useState(0)
+  const [mostVoted, setMostVoted] = useState(0)
 
 
-  const randomAnecdote = () => setSelected(getRandomInt(8))
+  const randomAnecdote = () => setSelected(getRandomInt(anecdotes.length))
   const addVote = () => {
     copy[selected] += 1
     setVote(copy[selected])
-    console.log(copy)
-    console.log(selected)
+    mostVotedAnecdote()
+    console.log('copy: ', copy)
+    console.log('selected: ',selected)
   }
+
+  const mostVotedAnecdote = () => setMostVoted(getMostLiked(copy))
 
   votes[selected] = vote
 
+
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       {anecdotes[selected]}
       <p>Has {copy[selected]} votes </p>
 
       <Button handleClick= {addVote} text = "Vote"/>
       <Button handleClick= {randomAnecdote} text = "Give anecdote"/>
+
+      <h1>Anecdote with most votes</h1>
+      {anecdotes[mostVoted]}
+      <p>Has {copy[mostVoted]} votes </p>
     </div>
   )
 

@@ -1,5 +1,6 @@
 import Course from './component/Course'
 
+// 2.1-2.5
 const App = () => {
   const courses = [ 
     {

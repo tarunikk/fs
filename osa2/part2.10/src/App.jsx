@@ -61,7 +61,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     console.log('effect')
@@ -80,6 +80,7 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault ()
     const names = persons.map(person => person.name)
+    console.log(names)
 
     const personObject = {
       name: newName,
@@ -88,7 +89,8 @@ const App = () => {
     }
 
     if (names.includes(newName)) {
-      alert(`${newName} is already added to phonebook`)
+      console.log(`${newName} is already added to phonebook`)
+      updateNumber(newName)
       return
     }
 
@@ -125,7 +127,29 @@ const App = () => {
     }   
   }
 
+  const updateNumber = ( newName ) => {
+    const person = persons.find((p => p.name === newName))
+    console.log(person)
+    const changedPerson = { ...person, number: newNumber }
+    console.log(changedPerson)
+    if (confirm(`'${newName}' is already added to phonebook, replace the old number with new one?`)) {
+      personService
+        .update(person.id, changedPerson)
+        .then(returnedPerson => {
+          setPersons(persons.map(person => (person.name !== newName ? person : returnedPerson)))
+          console.log('Updated info succesfully')
+          setNewName('')
+          setNewNumber('')
+        })
+    } else {
+      setNewName('')
+      setNewNumber('')
+      return
+    }
+  }
+
   const Notification = ({ message }) => {
+    console.log(message)
     if (message === null) {
       return null
     }

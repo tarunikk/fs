@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+// 1.12-1.14
 const Button = (props) => (
   <button onClick={props.handleClick} > {props.text} </button>
 )

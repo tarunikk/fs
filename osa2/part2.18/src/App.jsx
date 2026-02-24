@@ -17,9 +17,7 @@ const App = () => {
     })
   }, [])
 
-
   useEffect(() => {
-    // console.log('effect run, country is now', country)
     if (country){
       axios
         .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${country}`)
@@ -50,7 +48,7 @@ const App = () => {
             country={country} 
             info={info}
           />
-      </div>
+      </div> 
       )
     }
     return (
@@ -86,9 +84,10 @@ const App = () => {
     ? countries.filter(country => country.toLowerCase().includes(value.toLowerCase()) === true)
     : []
 
+
   const handleChange = (event) => {
-      console.log(event.target.value)
-      setValue(event.target.value)
+    console.log(event.target.value)
+    setValue(event.target.value)
   }
 
   return (

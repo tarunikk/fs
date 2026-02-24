@@ -3,13 +3,12 @@ import axios from 'axios'
 import countryService from './services/countries'
 
 const App = () => {
-  const [countries, setCountries] = useState ([])
+  const [countries, setCountries] = useState([])
   const [info, setInfo] = useState([])
   const [value, setValue] = useState('')
   const [country, setCountry] = useState(null)
   
   useEffect(() => {
-    // console.log('effect run, country is now', country)
     countryService
       .getAll()
       .then(response => {
@@ -34,7 +33,7 @@ const App = () => {
   }, [country])
 
   const Countries = ({ countriesToShow }) => {
-    console.log('countries to show: ',countriesToShow)
+    console.log('countries to show: ', countriesToShow)
     if (countriesToShow.length > 10) {
       return (
         <div>
@@ -65,22 +64,27 @@ const App = () => {
 
   const Country = ({ country, info }) => {
     console.log(country)
-    const languages = (info.languages)
-    console.log(languages)
+    console.log(info.capital)
+    const languages = Object.values(info.languages)
+    console.log('languages: ',languages)
     return (
       <div>
         <h2>{country}</h2>
         <p>Capital {info.capital}</p>
         <p>Area {info.area}</p>
         <h2>Languages</h2>
-        <li>languages here</li>
+        <ul>
+          {languages.map(lang =>
+              <li>{lang}</li>
+          )}
+        </ul>
       </div>
     )
   }
 
-  const countriesToShow = value 
+  const countriesToShow = value
     ? countries.filter(country => country.toLowerCase().includes(value.toLowerCase()) === true)
-    : countries 
+    : []
 
   const handleChange = (event) => {
       console.log(event.target.value)

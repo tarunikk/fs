@@ -57,7 +57,7 @@ app.get('/info', (request, response) => {
     console.log(date)
     const howMany = persons.length
 
-    response.send(`Phonebook has info for ${howMany} people. ${date}`)
+    response.send(`<p> Phonebook has info for ${howMany} people.</p> ${date}`)
 })
 
 app.post('/api/persons', (request, response) => {

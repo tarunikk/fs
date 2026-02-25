@@ -10,20 +10,20 @@ mongoose.connect(url)
     console.log('connected to MongoDB', result.connection.name)
   })
   .catch((error) => {
-    console.log('error connecting to MongoDB:', error.message)  
+    console.log('error connecting to MongoDB:', error.message)
   })
 
 const personSchema = new mongoose.Schema({
-    name: {
-      type: String,
-      minlength: 3,
-      required: true
-    },
-    number: {
-      type: String,
-      minlength: 8,
-      required: true
-    } 
+  name: {
+    type: String,
+    minlength: 3,
+    required: true
+  },
+  number: {
+    type: String,
+    minlength: 8,
+    required: true
+  }
 })
 
 personSchema.set('toJSON', {
@@ -42,12 +42,12 @@ if (process.argv.length < 4) {
       console.log(`${person.name} ${person.number}`)
     })
     mongoose.connection.close()
-  }) 
+  })
 } else {
     person.save().then(result => {
     console.log(`added ${newName} number ${newNumber} to phonebook`)
     mongoose.connection.close()
-  }) 
+  })
 }*/
 
 module.exports = mongoose.model('Person', personSchema)

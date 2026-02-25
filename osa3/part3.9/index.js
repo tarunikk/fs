@@ -3,6 +3,8 @@ const express = require('express')
 const Person = require('./models/person')
 // var morgan = require('morgan')
 
+// backend here (frontend at osa3/phonebook)
+// 3.9-3.19 & 3.21-3.22
 const app = express()
 
 app.use(express.static('dist'))
@@ -91,7 +93,7 @@ app.post('/api/persons', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.put('/api/persons/:id', (request, response, next)=> {
+app.put('/api/persons/:id', (request, response, next) => {
   const { name, number } = request.body
 
   Person.findById(request.params.id)

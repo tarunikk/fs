@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import Notification from './components/Notification'
 import personService from './services/persons'
 
 const Person = ({ name, number, removePerson}) => {
@@ -61,6 +62,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [notifMessage, setNotifMessage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
@@ -89,8 +91,8 @@ const App = () => {
     }
 
     if (names.includes(newName)) {
-      alert(`${newName} is already added to phonebook`)
-      console.log(`adding new person failed`)
+      console.log(`${newName} is already added to phonebook`)
+      updateNumber(newName)
       return
     }
 
@@ -106,10 +108,10 @@ const App = () => {
         setPersons(persons.concat(response.data))
         setNewName('')
         setNewNumber('')
-        setErrorMessage( `added '${personObject.name}' `)
+        setNotifMessage( `added '${personObject.name}' `)
         console.log(`${personObject.name} added`)
         setTimeout(() => {
-          setErrorMessage(null)
+          setNotifMessage(null)
         }, 10000)
         console.log(persons)    
       })
@@ -129,9 +131,9 @@ const App = () => {
         .then(response => {  
           setPersons(persons.filter(p => p.id !== id))
           console.log(`${name} deleted`)
-          setErrorMessage( `removed '${name}' `)
+          setNotifMessage(`removed '${name}' `)
           setTimeout(() => {
-            setErrorMessage(null)
+            setNotifMessage(null)
           }, 10000)
           console.log(response) })
         .catch(error => {
@@ -146,16 +148,32 @@ const App = () => {
     }   
   }
 
-  const Notification = ({ message }) => {
-    if (message === null) {
-      return null
+  const updateNumber = ( newName ) => {
+    const person = persons.find((p => p.name === newName))
+    console.log(person)
+    const changedPerson = { ...person, number: newNumber }
+    console.log(changedPerson)
+    if (confirm(`'${newName}' is already added to phonebook, replace the old number with new one?`)) {
+      personService
+        .update(person.id, changedPerson)
+        .then(returnedPerson => {
+          setPersons(persons.map(person => (person.name !== newName ? person : returnedPerson)))
+          console.log('Updated info succesfully')
+          setNewName('')
+          setNewNumber('')
+        })
+        .catch(error => {
+        console.log(error.response.data)
+        setErrorMessage(`${error.response.data.error}`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 10000)
+      })
+    } else {
+      setNewName('')
+      setNewNumber('')
+      return
     }
-  
-    return (
-      <div className="error">
-        {message}
-      </div>
-    )
   }
 
   const handleAddName = (event) => {
@@ -176,7 +194,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={errorMessage} />
+      <Notification message={errorMessage} className="error"/>
+      <Notification message={notifMessage} className="notif" />
       <div>
         <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
       </div>

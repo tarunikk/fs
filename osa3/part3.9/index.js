@@ -40,7 +40,7 @@ app.get('/info', (request, response) => {
   console.log(date)
   Person.find({}).then(persons => {
     const howMany = persons.length
-    response.send(`<p>Phonebook has info for ${howMany} people.</p> <p>${date}</p>`)
+    response.send(`<p>Phonebook has info for ${howMany} people.</p> ${date}`)
   })
 })
 

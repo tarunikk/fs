@@ -3,6 +3,8 @@ import axios from 'axios'
 import Notification from './components/Notification'
 import personService from './services/persons'
 
+// frontend here (backend at osa3/part3.9)
+// 3.9-3.19 & 3.21-3.22
 const Person = ({ name, number, removePerson}) => {
   const label = 'Delete'
 
@@ -108,7 +110,7 @@ const App = () => {
         setPersons(persons.concat(response.data))
         setNewName('')
         setNewNumber('')
-        setNotifMessage( `added '${personObject.name}' `)
+        setNotifMessage( `added ${personObject.name}`)
         console.log(`${personObject.name} added`)
         setTimeout(() => {
           setNotifMessage(null)
@@ -150,10 +152,9 @@ const App = () => {
 
   const updateNumber = ( newName ) => {
     const person = persons.find((p => p.name === newName))
-    console.log(person)
     const changedPerson = { ...person, number: newNumber }
-    console.log(changedPerson)
-    if (confirm(`'${newName}' is already added to phonebook, replace the old number with new one?`)) {
+
+    if (confirm(`${newName} is already added to phonebook, replace the old number with new one?`)) {
       personService
         .update(person.id, changedPerson)
         .then(returnedPerson => {
@@ -161,28 +162,30 @@ const App = () => {
           console.log('Updated info succesfully')
           setNewName('')
           setNewNumber('')
+          setNotifMessage(`updated phone number for ${newName}`)
+          setTimeout(() => {
+            setNotifMessage(null)
+          }, 10000)
         })
         .catch(error => {
-        console.log(error.response.data)
-        setErrorMessage(`${error.response.data.error}`)
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 10000)
-      })
+          console.log(error.response.data)
+          setErrorMessage(`${error.response.data.error}`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 10000)
+        })
     } else {
-      setNewName('')
-      setNewNumber('')
-      return
+        setNewName('')
+        setNewNumber('')
+        return
     }
   }
 
   const handleAddName = (event) => {
-    console.log(event.target.value)
     setNewName(event.target.value)
   }
 
   const handleAddNumber = (event) => {  
-    console.log(event.target.value)
     setNewNumber(event.target.value)
   }
 

@@ -1,18 +1,12 @@
 require('dotenv').config()
 const express = require('express')
 const Person = require('./models/person')
-var morgan = require('morgan')
+// var morgan = require('morgan')
 
 const app = express()
 
-morgan.token('type', function (req, res) {
-  const body = req.body
-  console.log(res.body)
-  if (body === null) {
-    return '-'
-  } else {
-    return JSON.stringify([body.name, body.number])}
-})
+app.use(express.static('dist'))
+app.use(express.json())
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
@@ -25,9 +19,17 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 
-app.use(express.static('dist'))
-app.use(express.json())
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :type'))
+/**
+morgan.token('type', function (req, res) {
+  const body = req.body
+  console.log(res.body)
+  if (body === null) {
+    return '-'
+  } else {
+    return JSON.stringify([body.name, body.number])}
+})
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :type'))  */
 
 app.get('/', (request, response) => {
   response.send('<h1>Phonebook</h1>')
@@ -63,6 +65,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 app.post('/api/persons', (request, response, next) => {
   const body = request.body
+  console.log(body)
 
   if (!body.name) {
     return response.status(400).json({

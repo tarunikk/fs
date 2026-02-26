@@ -14,6 +14,25 @@ describe('favorite blog', () => {
         }
     ]
 
+    const listWithTwoBlogs = [
+        {
+        _id: '5a422aa71b54a676234d17f8',
+        title: 'Go To Statement Considered Harmful',
+        author: 'Edsger W. Dijkstra',
+        url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+        likes: 5,
+        __v: 0
+        },
+        {
+        _id: '69401204cfbc832e22fb45dc',
+        title: 'blogi yksi',
+        author: 'kirjoittaja',
+        url: 'http://www.bloginosoite.com',
+        likes: 5,
+        __v: 0
+        },
+    ]
+
     const listWithThreeBlogs = [
         {
         _id: '5a422aa71b54a676234d17f8',
@@ -43,10 +62,15 @@ describe('favorite blog', () => {
 
     test('Only one blog in the list is the favorite', () => {
        const result = listHelper.favoriteBlog(listWithOneBlog)
-       assert.strictEqual(result, listWithOneBlog[0])
+       assert.deepStrictEqual(result, listWithOneBlog[0])
     })
+    test('Two blogs with equal likes, returns one of them', () => {
+       const result = listHelper.favoriteBlog(listWithTwoBlogs)
+       assert.deepStrictEqual(result, listWithTwoBlogs[1])
+    })
+
     test('Three blogs, second has most likes', () => {
        const result = listHelper.favoriteBlog(listWithThreeBlogs)
-       assert.strictEqual(result, listWithThreeBlogs[1])
+       assert.deepStrictEqual(result, listWithThreeBlogs[1])
     })
 })    

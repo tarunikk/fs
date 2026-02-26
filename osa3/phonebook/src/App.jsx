@@ -1,64 +1,13 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+
+import Filter from './components/Filter'
 import Notification from './components/Notification'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
 import personService from './services/persons'
 
 // frontend here (backend at osa3/part3.9)
 // 3.9-3.19 & 3.21-3.22
-const Person = ({ name, number, removePerson}) => {
-  const label = 'Delete'
-
-  return (
-    <li>
-        {name} {number}
-        <button onClick={removePerson}> {label}</button>
-    </li>
-  )
-}
-
-const Persons = ({ personsToShow, removePerson}) => {
-  return (
-    <ul>
-      {personsToShow.map(person => 
-        <Person 
-          key={person.id} 
-          name={person.name} 
-          number={person.number}
-          removePerson = {() => removePerson(person.name, person.id)}/>
-      )}
-    </ul> 
-  )
-}
-
-const PersonForm = ({ addPerson, newName, handleAddName, newNumber, handleAddNumber }) => {
-  return (
-    <form onSubmit={addPerson}>
-      <div>
-        name: <input 
-                  value = {newName}
-                  onChange = {handleAddName}/>
-      </div>
-      <div>
-        number: <input 
-                  value = {newNumber}
-                  onChange = {handleAddNumber}/>
-        </div>
-      <div>
-        <button type="submit">add</button>
-      </div>
-    </form>
-  )
-}
-
-const Filter = ({ newFilter, handleFilterChange }) => {
-  return (
-    <div>
-      filter shown with 
-        <input value={newFilter} onChange={handleFilterChange} />
-    </div>
-  )
-} 
-
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
@@ -77,9 +26,14 @@ const App = () => {
       })
   }, [])
 
-  const personsToShow = newFilter 
-    ? persons.filter(person => person.name.toLowerCase().includes(newFilter.toLowerCase()) === true)
-    : persons
+  const personsToShow = persons.filter((person) => 
+    person.name.toLowerCase().includes(newFilter.toLowerCase())
+  )
+
+  const clearForm = () =>{
+    setNewName('')
+    setNewNumber('')
+  }
 
   const addPerson = (event) => {
     event.preventDefault ()
@@ -108,8 +62,7 @@ const App = () => {
       .create(personObject)    
       .then(response => {  
         setPersons(persons.concat(response.data))
-        setNewName('')
-        setNewNumber('')
+        clearForm()
         setNotifMessage( `added ${personObject.name}`)
         console.log(`${personObject.name} added`)
         setTimeout(() => {
@@ -126,14 +79,15 @@ const App = () => {
       })
   }
 
-  const removePerson = ( name, id ) => {
-    console.log(`information of ${name} needs to be deleted`)
-    if (confirm(`Do you want to remove all information of ${name}?`)) {
-      axios.delete(`/api/persons/${id}`)      
+  const removePerson = ( person ) => {
+    console.log(`information of ${person.name} needs to be deleted`)
+    if (confirm(`Do you want to remove all information of ${person.name}?`)) {
+      personService
+        .remove(person.id)    
         .then(response => {  
-          setPersons(persons.filter(p => p.id !== id))
-          console.log(`${name} deleted`)
-          setNotifMessage(`removed '${name}' `)
+          setPersons(persons.filter(p => p.id !== person.id))
+          console.log(`${person.name} deleted`)
+          setNotifMessage(`removed '${person.name}' `)
           setTimeout(() => {
             setNotifMessage(null)
           }, 10000)
@@ -160,8 +114,7 @@ const App = () => {
         .then(returnedPerson => {
           setPersons(persons.map(person => (person.name !== newName ? person : returnedPerson)))
           console.log('Updated info succesfully')
-          setNewName('')
-          setNewNumber('')
+          clearForm()
           setNotifMessage(`updated phone number for ${newName}`)
           setTimeout(() => {
             setNotifMessage(null)
@@ -175,24 +128,10 @@ const App = () => {
           }, 10000)
         })
     } else {
-        setNewName('')
-        setNewNumber('')
+        clearForm()
         return
     }
   }
-
-  const handleAddName = (event) => {
-    setNewName(event.target.value)
-  }
-
-  const handleAddNumber = (event) => {  
-    setNewNumber(event.target.value)
-  }
-
-  const handleFilterChange = (event) => {
-    setNewFilter(event.target.value)
-  }
-
 
   return (
     <div>
@@ -200,10 +139,10 @@ const App = () => {
       <Notification message={errorMessage} className="error"/>
       <Notification message={notifMessage} className="notif" />
       <div>
-        <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
+        <Filter newFilter={newFilter} setNewFilter={setNewFilter} />
       </div>
       <h2>Add a new</h2>
-        <PersonForm addPerson={addPerson} newName={newName} handleAddName={handleAddName} newNumber={newNumber} handleAddNumber={handleAddNumber} />
+        <PersonForm addPerson={addPerson} newName={newName} setNewName={setNewName} newNumber={newNumber} setNewNumber={setNewNumber} />
       <h2>Numbers</h2>
         <Persons personsToShow={personsToShow} removePerson={removePerson} />
     </div>

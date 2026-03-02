@@ -8,6 +8,7 @@ const helper = require('./test_helper')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const api = supertest(app)
+const tokenExtractor = require('../utils/middleware')
 
 beforeEach(async () => {
   await Blog.deleteMany({})
@@ -36,7 +37,7 @@ test('blog parameters include id not _id', async () => {
   })
 })
 
-test('a new blog can be added ', async () => {
+test('a new blog can be added ', tokenExtractor, async () => {
   const newBlog = {
     title: 'Uusi blogi',
     author: 'Erkki Esimerkki',

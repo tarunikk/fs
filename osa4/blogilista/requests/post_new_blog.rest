@@ -1,9 +1,9 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Impva3VtaWvDpG9saWthYW4iLCJpZCI6IjY5YTA0OWI4Yjk3OTJjYjlmMjJhOGUxOCIsImlhdCI6MTc3MjExNDkzMn0.VUhGVcb9ubH2BuFdWg-sy0ymPUCDZ0tAuNvfyf7BFU0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRrc25pa2thIiwiaWQiOiI2OTQ1NDM4MGQzZTQwYjI4ZmVhNWNmY2QiLCJpYXQiOjE3NzI0NTkzNTN9.JfXanIcF-BFYwDrucD00B8Cotzk9T-L6353d7kwXcUQ
 
 {
-    "title": "blogs pls",
-    "author": "toinen",
+    "title": "adding blog",
+    "author": "kolmas",
     "url": "http://homepage.com"
 }

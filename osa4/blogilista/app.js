@@ -9,6 +9,7 @@ const loginRouter = require('./controllers/login')
 
 const app = express()
 
+// 4.1-4.5, 4.8-4.22
 logger.info('connecting to', config.MONGODB_URI)
 
 mongoose

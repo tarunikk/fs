@@ -1,5 +1,5 @@
-DELETE  http://localhost:3003/api/blogs/69a052c01e879d426e1ff955
+DELETE  http://localhost:3003/api/blogs/6964f4233231ce1f4515e494
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Impva3VtaWvDpG9saWthYW4iLCJpZCI6IjY5YTA0OWI4Yjk3OTJjYjlmMjJhOGUxOCIsImlhdCI6MTc3MjExNDkzMn0.VUhGVcb9ubH2BuFdWg-sy0ymPUCDZ0tAuNvfyf7BFU0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY5NDU0MzYyZDNlNDBiMjhmZWE1Y2ZjYiIsImlhdCI6MTc3MjQ1OTY5NX0.N8GjN7xjKm1CAb9PWiOy9Hz4zAX2hfiyrXM5nmhsoCc
 
 // laita id tilalle olemassa oleva, pitäisi palauttaa 204 ei 400

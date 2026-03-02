@@ -29,7 +29,7 @@ describe('Blog app', () => {
     test('fails with wrong credentials', async ({ page }) => {
       await loginWith(page, 'mluukkai', 'wrong')
 
-      const errorDiv = page.locator('.error')
+      const errorDiv = page.locator('.notif')
       await expect(errorDiv).toContainText('wrong credentials')
       await expect(errorDiv).toHaveCSS('border-style', 'solid')
       await expect(errorDiv).toHaveCSS('color', 'rgb(255, 0, 0)')
@@ -67,7 +67,7 @@ describe('Blog app', () => {
         page.on('dialog', dialog => dialog.accept());
         await page.getByRole('button', { name: 'delete' }).click()
 
-        await expect(page.getByText(`removed 'a blog to like and delete'`)).toBeVisible()
+        await expect(page.getByText(`removed blog: 'a blog to like and delete'`)).toBeVisible()
         await expect(page.getByText('a blog to like and delete anonymous author')).not.toBeVisible()
       })
 

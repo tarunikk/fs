@@ -16,6 +16,15 @@ const create = async newObject => {
   return response.data
 }
 
+const remove = id => {
+  const url = `${baseUrl}/${id}`
+  const config = {
+    headers: { Authorization: token }
+  }
+  const request = axios.delete(url, config)
+  return request.then(response => response.data)
+}
+
 const getAll = () => {
   const request = axios.get(baseUrl)
   return request.then(response => response.data)
@@ -26,4 +35,4 @@ const addLike = (id, newObject) => {
   return request.then((response) => response.data)
 }
 
-export default { getAll, setToken, create, addLike }
+export default { getAll, setToken, create, addLike, remove }

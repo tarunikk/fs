@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react'
-import axios from 'axios'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
@@ -12,7 +11,7 @@ import BlogView from './components/BlogView'
 // 5.5-5.11 toimii oikein
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [notification, setNotification] = useState({ message: null })
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -35,6 +34,13 @@ const App = () => {
     }
   }, [])
 
+  const notifyWith = (message, isError = false) => {
+    setNotification({ message, isError })
+    setTimeout(() => {
+      setNotification({ message: null })
+    }, 5000)
+  }
+
   const addBlog = (blogObject) => {
     console.log('creating a new blog')
     blogFormRef.current.toggleVisibility()
@@ -44,37 +50,26 @@ const App = () => {
         returnedBlog.user = user
         setBlogs(blogs.concat(returnedBlog))
         console.log('new blog created')
-        setErrorMessage(`a new blog '${returnedBlog.title}' by '${returnedBlog.author}' added`)
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 5000)
+        notifyWith(`a new blog '${returnedBlog.title}' by '${returnedBlog.author}' added`)
       })
-      .catch(() => {
+      .catch(error => {
         console.log('creating a new blog failed')
-        setErrorMessage('fill all boxes')
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 5000)
+        notifyWith(error.response.data.error, true)
       })
   }
 
-  const removeBlog = ( blog ) => {
+  const removeBlog = blog => {
     if (confirm(`Do you want to remove ${blog.title} by ${blog.author}?`)) {
-      axios.delete(`/api/blogs/${blog.id}`)
+      blogService
+        .remove(blog.id)
         .then(response => {
           setBlogs(blogs.filter(b => b.id !== blog.id))
           console.log(`Blog ${blog.title} deleted`)
-          setErrorMessage( `removed '${blog.title}' `)
-          setTimeout(() => {
-            setErrorMessage(null)
-          }, 10000)
+          notifyWith( `removed blog: '${blog.title}' `)
           console.log(response) })
         .catch(error => {
           console.log(error.response.data)
-          setErrorMessage(`${error.response.data.error}`)
-          setTimeout(() => {
-            setErrorMessage(null)
-          }, 10000)
+          notifyWith(error.response.data.error, true)
         })
     } else {
       return
@@ -117,10 +112,7 @@ const App = () => {
       setPassword('')
     } catch {
       console.log('error logging in')
-      setErrorMessage('wrong credentials')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      notifyWith('wrong credentials', true)
     }
   }
 
@@ -128,7 +120,7 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
-        <Notification message={errorMessage} />
+        <Notification notification={notification} />
         <form onSubmit={handleLogin}>
           <div>
             <label>
@@ -172,7 +164,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification message={errorMessage} />
+      <Notification notification={notification} />
 
       {user && (
         <div>

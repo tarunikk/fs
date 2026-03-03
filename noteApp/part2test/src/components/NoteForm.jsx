@@ -1,33 +1,21 @@
-import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { createNote } from '../reducer/noteReducer'
 
-// Tilan muuttuja newNote ja sen muutoksesta huolehtiva tapahtumankäsittelijä on
-// siirretty komponentista App lomakkeesta huolehtivaan komponenttiin.
-const NoteForm = ({ createNote  }) => {
-  const [newNote, setNewNote] = useState('')
+const NoteForm = () => {
+  const dispatch = useDispatch()
 
-  const addNote = event => {
+  const addNote = (event) => {
     event.preventDefault()
-    createNote({
-      content: newNote,
-      important: true
-    })
-
-    setNewNote('')
+    const content = event.target.note.value
+    event.target.note.value = ''
+    dispatch(createNote(content))
   }
 
   return (
-    <div>
-      <h2>Create a new note</h2>
-
-      <form onSubmit={addNote}>
-        <input
-          value={newNote}
-          onChange={event => setNewNote(event.target.value)}
-          placeholder='write note content here'
-        />
-        <button type="submit">save</button>
-      </form>
-    </div>
+    <form onSubmit={addNote}>
+      <input name="note" />
+      <button type="submit">add</button>
+    </form>
   )
 }
 

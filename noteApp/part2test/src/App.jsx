@@ -1,13 +1,16 @@
-import { useState, useEffect } from 'react'
-import Footer from './components/Footer'
-import Note from './components/Note'
-import Notification from './components/Notification'
-import LoginForm from './components/LoginForm'
 import NoteForm from './components/NoteForm'
-import Togglable from './components/Togglable'
-import loginService from './services/login'
-import noteService from './services/notes'
+import Notes from './components/Notes'
 
+const App = () => {
+  return (
+    <div>
+      <NoteForm />
+      <Notes />
+    </div>
+  )
+}
+
+/**
 const App = () => {
   const [notes, setNotes] = useState([])
   const [showAll, setShowAll] = useState(true)
@@ -142,6 +145,6 @@ const App = () => {
       <Footer />
     </div>
   )
-}
+}*/
 
 export default App

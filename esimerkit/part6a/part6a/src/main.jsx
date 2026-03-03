@@ -17,7 +17,7 @@ const counterReducer = (state = 0, action) => {
 
 const store = createStore(counterReducer)
 
-
+// eslint-disable-next-line react-refresh/only-export-components
 const App = () => {
   return (
     <div>
@@ -57,7 +57,7 @@ store.dispatch({type: 'DECREMENT'})
 console.log(store.getState())
 //  lopulta actionien ZERO ja DECREMENT jälkeen -1
 
-store.dispatch({type: 'ZERO'})
+store.dispatch({ type: 'ZERO' })
 
 // tulostetaan jokainen storen muutos konsoliin:
 store.subscribe(() => {
@@ -71,6 +71,8 @@ store.dispatch({ type: 'INCREMENT' })
 store.dispatch({ type: 'ZERO' })
 store.dispatch({ type: 'DECREMENT' })
 // tulostuu 1 2 3 0 -1
+
+store.dispatch({ type: 'ZERO' })
 
 renderApp()
 store.subscribe(renderApp)

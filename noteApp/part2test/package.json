@@ -12,6 +12,7 @@
     "server": "json-server -p 3001 db.json"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.11.2",
     "axios": "^1.7.9",
     "express": "^5.1.0",
     "morgan": "^1.10.1",

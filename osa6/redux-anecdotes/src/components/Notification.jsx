@@ -1,6 +1,11 @@
-import store from "../store"
+import { useSelector } from 'react-redux'
 
 const Notification = ( ) => {
+
+  const message = useSelector(({ notification}) => {
+    console.log('notification: ', notification)
+    return notification
+  })
 
   const style = {
     border: 'solid',
@@ -9,7 +14,7 @@ const Notification = ( ) => {
     marginBottom: 10
   }
 
-  return <div style={style}>{store.getState().notification}</div>
+  return <div style={style}>{message}</div>
 }
 
 export default Notification

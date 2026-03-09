@@ -1,3 +1,34 @@
+const baseUrl = 'http://localhost:3001/notes'
+
+const getAll = async () => {
+  // fetch toteuttaa oletusarvoisen toiminnon eli GET-pyynnön.
+  const response = await fetch(baseUrl)
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch notes')
+  }
+
+  return await response.json()
+}
+
+const createNew = async (content) => {
+  const options = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content, important: false }),
+  }
+
+  const response = await fetch(baseUrl, options)
+  if (!response.ok) {
+    throw new Error('Failed to create note')
+  }
+
+  return await response.json()
+}
+
+export default { getAll, createNew }
+
+/** osa1-5
 import axios from 'axios'
 const baseUrl = '/api/notes'
 
@@ -31,4 +62,4 @@ export default {
   create,
   update,
   setToken
-}
+} */
